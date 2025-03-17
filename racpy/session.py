@@ -15,7 +15,7 @@ class Session:
     port: int
     client: Client
 
-    def exec(self, command: Command, handler: Callable[[str], T] = None) -> str | None:
+    def exec(self, command: Command, handler: Callable[[str], T] = None) -> T | None:
         args = [
             self.client.rac_cli_path,
             f"{self.host}:{self.port}",

@@ -92,6 +92,21 @@ class InfobaseAlreadyExistsError(Exception):
         )
 
 
+class ServerAlreadyExistsError(Exception):
+    def __init__(self, stderr: str):
+        super().__init__("Рабочий сервер уже зарегистрирован в кластере")
+
+
+class ServerIPRangeError(Exception):
+    def __init__(self, stderr: str):
+        super().__init__("Левая граница диапазона IP портов больше правой")
+
+
+class ServerIsMainError(Exception):
+    def __init__(self, stderr: str):
+        super().__init__("Рабочий сервер является центральным. Удаление невозможно")
+
+
 class ParamError(Exception):
     def __init__(self, stderr: str):
         super().__init__(stderr.split("\n")[0])
@@ -110,6 +125,18 @@ class UnknownHostError(Exception):
 
 
 errors = [
+    (
+        r"Рабочий сервер является центральным. Удаление невозможно",
+        ServerIsMainError,
+    ),
+    (
+        r"Левая граница диапазона IP портов больше правой",
+        ServerIPRangeError,
+    ),
+    (
+        r"Рабочий сервер уже зарегистрирован в кластере",
+        ServerAlreadyExistsError,
+    ),
     (
         r"Компьютер отсутствует в сети или недоступен",
         UnknownHostError,

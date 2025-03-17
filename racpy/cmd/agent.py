@@ -1,12 +1,11 @@
 from .command import Command, Arg
 from ..session import Session
 from ..handlers import to_str, to_list
-from ..types import List, String
 
 
 class Agent:
     @staticmethod
-    def version(session: Session) -> String:
+    def version(session: Session) -> str:
         return session.exec(
             Command(
                 Arg("agent"),
@@ -20,7 +19,7 @@ class AgentAdmin:
     @staticmethod
     def list(
         session: Session, agent_user: str | None = None, agent_pwd: str | None = None
-    ) -> List | None:
+    ) -> list[dict[str, str | int]] | None:
         return session.exec(
             Command(
                 Arg("agent"),
@@ -31,6 +30,15 @@ class AgentAdmin:
             ),
             to_list,
         )
+
+    @staticmethod
+    def first(
+        session: Session, agent_user: str | None = None, agent_pwd: str | None = None
+    ) -> dict[str, str | int] | None:
+        admins = AgentAdmin.list(session, agent_user, agent_pwd)
+        if admins is None:
+            return admins
+        return admins[0]
 
     @staticmethod
     def remove(

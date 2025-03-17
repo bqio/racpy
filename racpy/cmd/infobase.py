@@ -1,7 +1,6 @@
 from .command import Command, Arg, Flag
 from ..session import Session
 from ..handlers import to_dict, to_list
-from ..types import Dict, UUID_String, List
 from ..utils import b2of, b2da, b2yn
 
 
@@ -15,7 +14,7 @@ class Infobase:
         infobase_pwd: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> Dict:
+    ) -> dict[str, str | int]:
         return session.exec(
             Command(
                 Arg("infobase"),
@@ -50,7 +49,7 @@ class Infobase:
         descr: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> UUID_String:
+    ) -> str:
         return session.exec(
             Command(
                 Arg("infobase"),
@@ -183,7 +182,7 @@ class Infobase:
         cluster_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> List | None:
+    ) -> list[dict[str, str | int]] | None:
         return session.exec(
             Command(
                 Arg("infobase"),
@@ -195,3 +194,15 @@ class Infobase:
             ),
             to_list,
         )
+
+    @staticmethod
+    def first(
+        session: Session,
+        cluster_uuid: str,
+        cluster_user: str | None = None,
+        cluster_pwd: str | None = None,
+    ) -> dict[str, str | int] | None:
+        infobases = Infobase.list(session, cluster_uuid, cluster_user, cluster_pwd)
+        if infobases is None:
+            return infobases
+        return infobases[0]

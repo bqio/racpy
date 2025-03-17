@@ -1,7 +1,6 @@
 from .command import Command, Arg
 from ..session import Session
 from ..handlers import to_list, to_dict
-from ..types import Dict, List, UUID_String
 from ..utils import b2yn
 
 
@@ -24,7 +23,7 @@ class Cluster:
         errors_count_threshold: int | None = None,
         agent_user: str | None = None,
         agent_pwd: str | None = None,
-    ) -> UUID_String:
+    ) -> str:
         return session.exec(
             Command(
                 Arg("cluster"),
@@ -106,12 +105,11 @@ class Cluster:
                 Arg(cluster_uuid, "--cluster={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
-            ),
-            None,
+            )
         )
 
     @staticmethod
-    def list(session: Session) -> List | None:
+    def list(session: Session) -> list[dict[str, str | int]] | None:
         return session.exec(
             Command(
                 Arg("cluster"),
@@ -121,7 +119,14 @@ class Cluster:
         )
 
     @staticmethod
-    def info(session: Session, cluster_uuid: str) -> Dict:
+    def first(session: Session) -> dict[str, str | int] | None:
+        clusters = Cluster.list(session)
+        if clusters is None:
+            return clusters
+        return clusters[0]
+
+    @staticmethod
+    def info(session: Session, cluster_uuid: str) -> dict[str, str | int]:
         return session.exec(
             Command(
                 Arg("cluster"),
@@ -139,7 +144,7 @@ class ClusterAdmin:
         cluster_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> List | None:
+    ) -> list[dict[str, str | int]] | None:
         return session.exec(
             Command(
                 Arg("cluster"),

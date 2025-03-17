@@ -39,8 +39,8 @@ from racpy.cmd.agent import Agent
 client = Client(rac_cli_path="C:\\rac.exe")
 session = Session(host="localhost", port=1545, client=client)
 
+# Получение версии агента
 print(Agent.version(session=session))
-# 8.3.24.1667
 ```
 
 ### Администратор агента кластера
@@ -108,13 +108,13 @@ from racpy.cmd.infobase import Infobase
 client = Client(rac_cli_path="C:\\rac.exe")
 session = Session(host="localhost", port=1545, client=client)
 
-# Получаем UUID первого кластера сервера
+# Получение UUID первого кластера
 cluster_id = Cluster.list(session=session)[0]["cluster"]
 
 # Создание новой информационной базы в кластере с возвратом её UUID
 infobase_id = Infobase.create(
     session=session,
-    cluster_uuid=cluster["cluster"],
+    cluster_uuid=cluster_id,
     name="Test IB",
     db_server="localhost",
     db_name="test_ib",
@@ -147,5 +147,124 @@ Infobase.remove(
     infobase_uuid=infobase_id,
     drop_database=True,
     clear_database=True,
+)
+```
+
+### Сервер
+
+Класс сервера предоставляет статические методы для взаимодействия с рабочими серверами кластера.
+
+```python
+from racpy.client import Client
+from racpy.session import Session
+from racpy.cmd.cluster import Cluster
+from racpy.cmd.server import Server
+
+client = Client(rac_cli_path="C:\\rac.exe")
+session = Session(host="localhost", port=1545, client=client)
+
+# Получение первого кластера
+cluster_id = Cluster.first(session=session)["cluster"]
+# .first() это шорткат на Cluster.list()[0]
+
+# Получение списока рабочих серверов кластера
+servers = Server.list(session=session, cluster_uuid=cluster_id)
+
+# Создание нового рабочего сервера и возвращение его UUID
+server_id = Server.create(
+    session=session,
+    cluster_uuid=cluster_id,
+    agent_host="host",
+    agent_port=1541,
+    port_range="1475:1476",
+)
+
+# Получение информации рабочего сервера
+server_info = Server.info(
+    session=session, cluster_uuid=cluster_id, server_uuid=server_id
+)
+
+# Обновление информации рабочего сервера
+Server.update(
+    session=session,
+    cluster_uuid=cluster_id,
+    server_uuid=server_id,
+    connections_limit=512,
+)
+
+# Удаление рабочего сервера
+Server.remove(session=session, cluster_uuid=cluster_id, server_uuid=server_id)
+```
+
+### Рабочий процесс
+
+Класс рабочего процесса предоставляет статические методы для взаимодействия с рабочими процессами.
+
+```python
+from racpy.client import Client
+from racpy.session import Session
+from racpy.cmd.cluster import Cluster
+from racpy.cmd.server import Server
+
+client = Client(rac_cli_path="C:\\rac.exe")
+session = Session(host="localhost", port=1545, client=client)
+
+# Получение кластера
+cluster_id = Cluster.first(session=session)["cluster"]
+
+# Получение сервера
+server_id = Server.first(session=session, cluster_uuid=cluster_id)["server"]
+
+# Получение списка рабочих процессов
+processes = Process.list(session=session, cluster_uuid=cluster_id, server_uuid=server_id)
+
+# Получение информации рабочего процесса вместе с лицензиями
+process_id = processes[0]["process"]
+process_info = Process.info(
+    session=session, cluster_uuid=cluster_id, process_uuid=process_id, licenses=True
+)
+```
+
+### Соединения
+
+Класс соединения предоставляет статические методы для администрирования соединений.
+
+```python
+from racpy.client import Client
+from racpy.session import Session
+from racpy.cmd.cluster import Cluster
+from racpy.cmd.server import Server
+
+client = Client(rac_cli_path="C:\\rac.exe")
+session = Session(host="localhost", port=1545, client=client)
+
+# Получение необходимых UUID
+cluster_id = Cluster.first(session=session)["cluster"]
+server_id = Server.first(session=session, cluster_uuid=cluster_id)["server"]
+process_id = Process.first(
+    session=session, cluster_uuid=cluster_id, server_uuid=server_id
+)["process"]
+infobase_id = Infobase.first(session=session, cluster_uuid=cluster_id)["infobase"]
+
+# Получение списока соединений
+connections = Connection.list(
+    session=session,
+    cluster_uuid=cluster_id,
+    process_uuid=process_id,
+    infobase_uuid=infobase_id,
+)
+
+# Получение информации соединения
+connection_id = connections[0]["connection"]
+connection_info = Connection.info(
+    session=session, cluster_uuid=cluster_id, connection_uuid=connection_id
+)
+
+# Уничтожает соединение
+Connection.kill(
+    session=session,
+    cluster_uuid=cluster_id,
+    process_uuid=process_id,
+    connection_uuid=connection_id,
 )
 ```
