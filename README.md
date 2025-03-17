@@ -1,4 +1,4 @@
-# RacPy
+# RacPy [В разработке]
 
 Библиотека на языке Python, которая позволяет взаимодействовать с сервером администрирования 1С через утилиту RAC, предоставляя соответствующие сущности.
 
@@ -9,7 +9,7 @@
 Клиент необходим, чтобы указать путь до утилиты RAC и создать сессию подключения.
 
 ```python
-from racpy.client import Client
+from racpy import Client
 
 client = Client(rac_cli_path="C:\\rac.exe")
 ```
@@ -19,8 +19,7 @@ client = Client(rac_cli_path="C:\\rac.exe")
 Сессия необходима для создания уникального соединения с сервером и выполнения запросов. Можно создавать сразу несколько сессий для взаимодействия с разными серверами.
 
 ```python
-from racpy.client import Client
-from racpy.session import Session
+from racpy import Client, Session
 
 client = Client(rac_cli_path="C:\\rac.exe")
 session = Session(host="server", port=1545, client=client)
@@ -32,15 +31,13 @@ local_session = Session(host="localhost", port=1545, client=client)
 Класс агента предоставляет статические методы для взаимодействия с сервером в режиме администрирования агента кластера.
 
 ```python
-from racpy.client import Client
-from racpy.session import Session
-from racpy.cmd.agent import Agent
+from racpy import Client, Session, Agent
 
 client = Client(rac_cli_path="C:\\rac.exe")
 session = Session(host="localhost", port=1545, client=client)
 
 # Получение версии агента
-print(Agent.version(session=session))
+Agent.version(session=session)
 ```
 
 ### Администратор агента кластера
@@ -48,9 +45,7 @@ print(Agent.version(session=session))
 Класс администратора агента кластера предоставляет статические методы для взаимодействия с сервером в режиме управления администраторами агента кластера.
 
 ```python
-from racpy.client import Client
-from racpy.session import Session
-from racpy.cmd.agent import AgentAdmin
+from racpy import Client, Session, AgentAdmin
 
 client = Client(rac_cli_path="C:\\rac.exe")
 session = Session(host="localhost", port=1545, client=client)
@@ -70,9 +65,7 @@ AgentAdmin.remove(session=session, name="Admin", agent_user="Admin")
 Класс кластера предоставляет статические методы для взаимодействия с сервером в режиме администрирования кластеров.
 
 ```python
-from racpy.client import Client
-from racpy.session import Session
-from racpy.cmd.cluster import Cluster
+from racpy import Client, Session, Cluster
 
 client = Client(rac_cli_path="C:\\rac.exe")
 session = Session(host="localhost", port=1545, client=client)
@@ -100,16 +93,16 @@ Cluster.remove(session=session, cluster_uuid=cluster_id)
 Класс информационной базы предоставляет статические методы для взаимодействия с информационными базами.
 
 ```python
-from racpy.client import Client
-from racpy.session import Session
-from racpy.cmd.cluster import Cluster
-from racpy.cmd.infobase import Infobase
+from racpy import Client, Session, Cluster, Infobase
 
 client = Client(rac_cli_path="C:\\rac.exe")
 session = Session(host="localhost", port=1545, client=client)
 
-# Получение UUID первого кластера
-cluster_id = Cluster.list(session=session)[0]["cluster"]
+# Получение UUID первого кластера (.first() эквивалентен Cluster.list()[0])
+cluster_id = Cluster.first(session=session)["cluster"]
+
+# Получение списка информационных баз
+infobases = Infobase.list(session=session, cluster_uuid=cluster_id)
 
 # Создание новой информационной базы в кластере с возвратом её UUID
 infobase_id = Infobase.create(
@@ -129,9 +122,6 @@ infobase_info = Infobase.info(
     session=session, cluster_uuid=cluster_id, infobase_uuid=infobase_id
 )
 
-# Получение списка информационных баз
-infobases = Infobase.list(session=session, cluster_uuid=cluster_id)
-
 # Обновление информации информационной базы
 Infobase.update(
     session=session,
@@ -150,22 +140,18 @@ Infobase.remove(
 )
 ```
 
-### Сервер
+### Рабочий сервер
 
-Класс сервера предоставляет статические методы для взаимодействия с рабочими серверами кластера.
+Класс рабочего сервера предоставляет статические методы для взаимодействия с рабочими серверами кластера.
 
 ```python
-from racpy.client import Client
-from racpy.session import Session
-from racpy.cmd.cluster import Cluster
-from racpy.cmd.server import Server
+from racpy import Client, Session, Cluster, Server
 
 client = Client(rac_cli_path="C:\\rac.exe")
 session = Session(host="localhost", port=1545, client=client)
 
-# Получение первого кластера
+# Получение UUID первого кластера
 cluster_id = Cluster.first(session=session)["cluster"]
-# .first() это шорткат на Cluster.list()[0]
 
 # Получение списока рабочих серверов кластера
 servers = Server.list(session=session, cluster_uuid=cluster_id)
@@ -201,18 +187,15 @@ Server.remove(session=session, cluster_uuid=cluster_id, server_uuid=server_id)
 Класс рабочего процесса предоставляет статические методы для взаимодействия с рабочими процессами.
 
 ```python
-from racpy.client import Client
-from racpy.session import Session
-from racpy.cmd.cluster import Cluster
-from racpy.cmd.server import Server
+from racpy import Client, Session, Cluster, Server, Process
 
 client = Client(rac_cli_path="C:\\rac.exe")
 session = Session(host="localhost", port=1545, client=client)
 
-# Получение кластера
+# Получение UUID первого кластера
 cluster_id = Cluster.first(session=session)["cluster"]
 
-# Получение сервера
+# Получение UUID первого рабочего сервера кластера
 server_id = Server.first(session=session, cluster_uuid=cluster_id)["server"]
 
 # Получение списка рабочих процессов
@@ -230,10 +213,7 @@ process_info = Process.info(
 Класс соединения предоставляет статические методы для администрирования соединений.
 
 ```python
-from racpy.client import Client
-from racpy.session import Session
-from racpy.cmd.cluster import Cluster
-from racpy.cmd.server import Server
+from racpy import Client, Session, Cluster, Server, Infobase, Process, Connection
 
 client = Client(rac_cli_path="C:\\rac.exe")
 session = Session(host="localhost", port=1545, client=client)
@@ -260,7 +240,7 @@ connection_info = Connection.info(
     session=session, cluster_uuid=cluster_id, connection_uuid=connection_id
 )
 
-# Уничтожает соединение
+# Разрыв соединения
 Connection.kill(
     session=session,
     cluster_uuid=cluster_id,
