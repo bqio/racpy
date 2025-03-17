@@ -1,7 +1,7 @@
 from .command import Command, Arg, Flag
 from ..session import Session
-from ..handlers import to_dict
-from ..types import Dict, UUID_String
+from ..handlers import to_dict, to_list
+from ..types import Dict, UUID_String, List
 from ..utils import b2of, b2da, b2yn
 
 
@@ -175,4 +175,23 @@ class Infobase:
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
             )
+        )
+
+    @staticmethod
+    def list(
+        session: Session,
+        cluster_uuid: str,
+        cluster_user: str | None = None,
+        cluster_pwd: str | None = None,
+    ) -> List | None:
+        return session.exec(
+            Command(
+                Arg("infobase"),
+                Arg("summary"),
+                Arg("list"),
+                Arg(cluster_uuid, "--cluster={}"),
+                Arg(cluster_user, "--cluster-user={}"),
+                Arg(cluster_pwd, "--cluster-pwd={}"),
+            ),
+            to_list,
         )

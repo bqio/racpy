@@ -20,7 +20,7 @@ class AgentAdmin:
     @staticmethod
     def list(
         session: Session, agent_user: str | None = None, agent_pwd: str | None = None
-    ) -> List:
+    ) -> List | None:
         return session.exec(
             Command(
                 Arg("agent"),

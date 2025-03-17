@@ -111,7 +111,7 @@ class Cluster:
         )
 
     @staticmethod
-    def list(session: Session) -> List:
+    def list(session: Session) -> List | None:
         return session.exec(
             Command(
                 Arg("cluster"),
@@ -139,7 +139,7 @@ class ClusterAdmin:
         cluster_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> List:
+    ) -> List | None:
         return session.exec(
             Command(
                 Arg("cluster"),
@@ -191,7 +191,7 @@ class ClusterAdmin:
         name: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> Command:
+    ) -> None:
         return session.exec(
             Command(
                 Arg("cluster"),

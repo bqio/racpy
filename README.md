@@ -1,6 +1,6 @@
 # RacPy
 
-Библиотека на языке Python, которая позволяет взаимодействовать с сервером администрирования 1С через утилиту RAC, предоставляя соответствующие классы.
+Библиотека на языке Python, которая позволяет взаимодействовать с сервером администрирования 1С через утилиту RAC, предоставляя соответствующие сущности.
 
 ## Сущности
 
@@ -108,8 +108,8 @@ from racpy.cmd.infobase import Infobase
 client = Client(rac_cli_path="C:\\rac.exe")
 session = Session(host="localhost", port=1545, client=client)
 
-# Получаем первый кластер с сервера
-cluster = Cluster.list(session=session)[0]
+# Получаем UUID первого кластера сервера
+cluster_id = Cluster.list(session=session)[0]["cluster"]
 
 # Создание новой информационной базы в кластере с возвратом её UUID
 infobase_id = Infobase.create(
@@ -126,13 +126,16 @@ infobase_id = Infobase.create(
 
 # Получение полной информации информационной базы
 infobase_info = Infobase.info(
-    session=session, cluster_uuid=cluster["cluster"], infobase_uuid=infobase_id
+    session=session, cluster_uuid=cluster_id, infobase_uuid=infobase_id
 )
+
+# Получение списка информационных баз
+infobases = Infobase.list(session=session, cluster_uuid=cluster_id)
 
 # Обновление информации информационной базы
 Infobase.update(
     session=session,
-    cluster_uuid=cluster["cluster"],
+    cluster_uuid=cluster_id,
     infobase_uuid=infobase_id,
     denied_message="Test",
 )
@@ -140,7 +143,7 @@ Infobase.update(
 # Удаление информационной базы
 Infobase.remove(
     session=session,
-    cluster_uuid=cluster["cluster"],
+    cluster_uuid=cluster_id,
     infobase_uuid=infobase_id,
     drop_database=True,
     clear_database=True,
