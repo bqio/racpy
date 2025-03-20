@@ -150,8 +150,8 @@ from racpy import Client, Session, Cluster, Server
 client = Client(rac_cli_path="C:\\rac.exe")
 session = Session(host="localhost", port=1545, client=client)
 
-# Получение UUID первого кластера
-cluster_id = Cluster.first(session=session)["cluster"]
+# Получение UUID первого кластера (.firstid() эквивалентен Cluster.first()["cluster"])
+cluster_id = Cluster.firstid(session=session)
 
 # Получение списока рабочих серверов кластера
 servers = Server.list(session=session, cluster_uuid=cluster_id)
@@ -193,10 +193,10 @@ client = Client(rac_cli_path="C:\\rac.exe")
 session = Session(host="localhost", port=1545, client=client)
 
 # Получение UUID первого кластера
-cluster_id = Cluster.first(session=session)["cluster"]
+cluster_id = Cluster.firstid(session=session)
 
 # Получение UUID первого рабочего сервера кластера
-server_id = Server.first(session=session, cluster_uuid=cluster_id)["server"]
+server_id = Server.firstid(session=session, cluster_uuid=cluster_id)
 
 # Получение списка рабочих процессов
 processes = Process.list(session=session, cluster_uuid=cluster_id, server_uuid=server_id)
@@ -219,12 +219,12 @@ client = Client(rac_cli_path="C:\\rac.exe")
 session = Session(host="localhost", port=1545, client=client)
 
 # Получение необходимых UUID
-cluster_id = Cluster.first(session=session)["cluster"]
-server_id = Server.first(session=session, cluster_uuid=cluster_id)["server"]
-process_id = Process.first(
+cluster_id = Cluster.firstid(session=session)
+server_id = Server.firstid(session=session, cluster_uuid=cluster_id)
+process_id = Process.firstid(
     session=session, cluster_uuid=cluster_id, server_uuid=server_id
-)["process"]
-infobase_id = Infobase.first(session=session, cluster_uuid=cluster_id)["infobase"]
+)
+infobase_id = Infobase.firstid(session=session, cluster_uuid=cluster_id)
 
 # Получение списока соединений
 connections = Connection.list(
@@ -246,5 +246,42 @@ Connection.kill(
     cluster_uuid=cluster_id,
     process_uuid=process_id,
     connection_uuid=connection_id,
+)
+```
+
+### Пользовательские сеансы
+
+Класс пользовательских сеансов предоставляет статические методы для взаимодействия с активными пользовательскими сеансами.
+
+```python
+from racpy import Client, Session, Cluster, Infobase, UserSession
+
+client = Client(rac_cli_path="C:\\rac.exe")
+session = Session(host="localhost", port=1545, client=client)
+
+# Получение необходимых UUID
+cluster_id = Cluster.firstid(session=session)
+infobase_id = Infobase.firstid(session=session, cluster_uuid=cluster_id)
+
+# Получение активных сеансов в информационной базе
+active_user_sessions = UserSession.list(
+    session=session, cluster_uuid=cluster_id, infobase_uuid=infobase_id
+)
+
+# Получение полной информации сеанса с указанием лицензий
+user_session_id = active_user_sessions[0]["session"]
+user_session_info = UserSession.info(
+    session=session,
+    cluster_uuid=cluster_id,
+    user_session_uuid=user_session_id,
+    licenses=True,
+)
+
+# Уничтожаем активный сеанс
+UserSession.kill(
+    session=session,
+    cluster_uuid=cluster_id,
+    user_session_uuid=user_session_id,
+    error_message="Bye",
 )
 ```

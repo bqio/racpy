@@ -206,3 +206,15 @@ class Infobase:
         if infobases is None:
             return infobases
         return infobases[0]
+
+    @staticmethod
+    def firstid(
+        session: Session,
+        cluster_uuid: str,
+        cluster_user: str | None = None,
+        cluster_pwd: str | None = None,
+    ) -> str | None:
+        infobase = Infobase.first(session, cluster_uuid, cluster_user, cluster_pwd)
+        if infobase is None:
+            return infobase
+        return infobase["infobase"]

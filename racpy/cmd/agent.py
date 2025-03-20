@@ -1,6 +1,7 @@
 from .command import Command, Arg
 from ..session import Session
 from ..handlers import to_str, to_list
+from ..errors import AgentAdminsNotFoundError
 
 
 class Agent:
@@ -19,8 +20,8 @@ class AgentAdmin:
     @staticmethod
     def list(
         session: Session, agent_user: str | None = None, agent_pwd: str | None = None
-    ) -> list[dict[str, str | int]] | None:
-        return session.exec(
+    ) -> list[dict[str, str | int]]:
+        admins = session.exec(
             Command(
                 Arg("agent"),
                 Arg("admin"),
@@ -30,6 +31,9 @@ class AgentAdmin:
             ),
             to_list,
         )
+        if admins is None or len(admins) == 0:
+            raise AgentAdminsNotFoundError
+        return admins
 
     @staticmethod
     def first(

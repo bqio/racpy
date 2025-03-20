@@ -16,6 +16,16 @@ class ClusterNotFoundError(Exception):
         super().__init__("Кластер с указанным идентификатором не найден")
 
 
+class ClustersNotFoundError(Exception):
+    def __init__(self, stderr: str):
+        super().__init__("Не найдено ни одного кластера")
+
+
+class AgentAdminsNotFoundError(Exception):
+    def __init__(self, stderr: str):
+        super().__init__("Не найдено ни одного администратора агента кластера")
+
+
 class InfobaseNotFoundError(Exception):
     def __init__(self, stderr: str):
         super().__init__("Информационная база с указанным идентификатором не найдена")

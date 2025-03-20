@@ -2,6 +2,7 @@ from .command import Command, Arg
 from ..session import Session
 from ..handlers import to_list, to_dict
 from ..utils import b2yn
+from ..errors import ClustersNotFoundError
 
 
 class Cluster:
@@ -109,21 +110,25 @@ class Cluster:
         )
 
     @staticmethod
-    def list(session: Session) -> list[dict[str, str | int]] | None:
-        return session.exec(
+    def list(session: Session) -> list[dict[str, str | int]]:
+        clusters = session.exec(
             Command(
                 Arg("cluster"),
                 Arg("list"),
             ),
             to_list,
         )
+        if clusters is None or len(clusters) == 0:
+            raise ClustersNotFoundError
+        return clusters
 
     @staticmethod
-    def first(session: Session) -> dict[str, str | int] | None:
-        clusters = Cluster.list(session)
-        if clusters is None:
-            return clusters
-        return clusters[0]
+    def first(session: Session) -> dict[str, str | int]:
+        return Cluster.list(session)[0]
+
+    @staticmethod
+    def firstid(session: Session) -> str:
+        return Cluster.first(session)["cluster"]
 
     @staticmethod
     def info(session: Session, cluster_uuid: str) -> dict[str, str | int]:

@@ -63,3 +63,19 @@ class Process:
         if processes is None:
             return processes
         return processes[0]
+
+    @staticmethod
+    def firstid(
+        session: Session,
+        cluster_uuid: str,
+        server_uuid: str,
+        licenses: bool = False,
+        cluster_user: str | None = None,
+        cluster_pwd: str | None = None,
+    ) -> str | None:
+        process = Process.first(
+            session, cluster_uuid, server_uuid, licenses, cluster_user, cluster_pwd
+        )
+        if process is None:
+            return process
+        return process["process"]

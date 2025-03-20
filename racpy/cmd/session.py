@@ -1,23 +1,25 @@
-from .command import Command, Arg
+from .command import Command, Arg, Flag
 from ..session import Session
 from ..handlers import to_list, to_dict
 
 
-class Connection:
+class UserSession:
     @staticmethod
     def info(
         session: Session,
         cluster_uuid: str,
-        connection_uuid: str,
+        user_session_uuid: str,
+        licenses: bool = False,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> dict[str, str | int]:
+    ) -> dict[str, str | int] | None:
         return session.exec(
             Command(
-                Arg("connection"),
+                Arg("session"),
                 Arg("info"),
                 Arg(cluster_uuid, "--cluster={}"),
-                Arg(connection_uuid, "--connection={}"),
+                Arg(user_session_uuid, "--session={}"),
+                Flag(licenses, "--licenses"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
             ),
@@ -28,22 +30,18 @@ class Connection:
     def list(
         session: Session,
         cluster_uuid: str,
-        process_uuid: str,
         infobase_uuid: str,
-        infobase_user: str | None = None,
-        infobase_pwd: str | None = None,
+        licenses: bool = False,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> list[dict[str, str | int]]:
+    ) -> list[dict[str, str | int]] | None:
         return session.exec(
             Command(
-                Arg("connection"),
+                Arg("session"),
                 Arg("list"),
                 Arg(cluster_uuid, "--cluster={}"),
-                Arg(process_uuid, "--process={}"),
                 Arg(infobase_uuid, "--infobase={}"),
-                Arg(infobase_user, "--infobase-user={}"),
-                Arg(infobase_pwd, "--infobase-pwd={}"),
+                Flag(licenses, "--licenses"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
             ),
@@ -54,72 +52,71 @@ class Connection:
     def first(
         session: Session,
         cluster_uuid: str,
-        process_uuid: str,
         infobase_uuid: str,
-        infobase_user: str | None = None,
-        infobase_pwd: str | None = None,
+        licenses: bool = False,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
     ) -> dict[str, str | int] | None:
-        connections = Connection.list(
-            session,
-            cluster_uuid,
-            process_uuid,
-            infobase_uuid,
-            infobase_user,
-            infobase_pwd,
-            cluster_user,
-            cluster_pwd,
+        user_sessions = UserSession.list(
+            session, cluster_uuid, infobase_uuid, licenses, cluster_user, cluster_pwd
         )
-        if connections is None:
-            return connections
-        return connections[0]
+        if user_sessions is None:
+            return user_sessions
+        return user_sessions[0]
 
     @staticmethod
     def firstid(
         session: Session,
         cluster_uuid: str,
-        process_uuid: str,
         infobase_uuid: str,
-        infobase_user: str | None = None,
-        infobase_pwd: str | None = None,
+        licenses: bool = False,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
     ) -> str | None:
-        connection = Connection.first(
-            session,
-            cluster_uuid,
-            process_uuid,
-            infobase_uuid,
-            infobase_user,
-            infobase_pwd,
-            cluster_user,
-            cluster_pwd,
+        user_session = UserSession.first(
+            session, cluster_uuid, infobase_uuid, licenses, cluster_user, cluster_pwd
         )
-        if connection is None:
-            return connection
-        return connection["connection"]
+        if user_session is None:
+            return user_session
+        return user_session["session"]
 
     @staticmethod
     def kill(
         session: Session,
         cluster_uuid: str,
-        process_uuid: str,
-        connection_uuid: str,
-        infobase_user: str | None = None,
-        infobase_pwd: str | None = None,
+        user_session_uuid: str,
+        error_message: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
     ) -> None:
         return session.exec(
             Command(
-                Arg("connection"),
-                Arg("disconnect"),
+                Arg("session"),
+                Arg("terminate"),
                 Arg(cluster_uuid, "--cluster={}"),
-                Arg(process_uuid, "--process={}"),
-                Arg(connection_uuid, "--connection={}"),
-                Arg(infobase_user, "--infobase-user={}"),
-                Arg(infobase_pwd, "--infobase-pwd={}"),
+                Arg(user_session_uuid, "--session={}"),
+                Arg(error_message, "--error-message={}"),
+                Arg(cluster_user, "--cluster-user={}"),
+                Arg(cluster_pwd, "--cluster-pwd={}"),
+            )
+        )
+
+    @staticmethod
+    def interrupt(
+        session: Session,
+        cluster_uuid: str,
+        user_session_uuid: str,
+        error_message: str | None = None,
+        cluster_user: str | None = None,
+        cluster_pwd: str | None = None,
+    ) -> None:
+        return session.exec(
+            Command(
+                Arg("session"),
+                Arg("interrupt-current-server-call"),
+                Arg(cluster_uuid, "--cluster={}"),
+                Arg(user_session_uuid, "--session={}"),
+                Arg(error_message, "--error-message={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
             )

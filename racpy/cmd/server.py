@@ -179,6 +179,18 @@ class Server:
         return servers[0]
 
     @staticmethod
+    def firstid(
+        session: Session,
+        cluster_uuid: str,
+        cluster_user: str | None = None,
+        cluster_pwd: str | None = None,
+    ) -> str | None:
+        server = Server.first(session, cluster_uuid, cluster_user, cluster_pwd)
+        if server is None:
+            return server
+        return server["server"]
+
+    @staticmethod
     def info(
         session: Session,
         cluster_uuid: str,
