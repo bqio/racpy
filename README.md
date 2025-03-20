@@ -2,6 +2,12 @@
 
 Библиотека на языке Python, которая позволяет взаимодействовать с сервером администрирования 1С через утилиту RAC, предоставляя соответствующие сущности.
 
+## Установка
+
+```bash
+pip install git+https://github.com/bqio/racpy.git
+```
+
 ## Сущности
 
 ### Клиент
@@ -226,7 +232,7 @@ process_id = Process.firstid(
 )
 infobase_id = Infobase.firstid(session=session, cluster_uuid=cluster_id)
 
-# Получение списока соединений
+# Получение списка соединений
 connections = Connection.list(
     session=session,
     cluster_uuid=cluster_id,
