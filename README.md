@@ -94,6 +94,35 @@ Cluster.update(
 Cluster.remove(session=session, cluster_uuid=cluster_id)
 ```
 
+### Администратор кластера
+
+Класс администратора кластера предоставляет статические методы для взаимодействия с сервером в режиме управления администраторами кластера.
+
+```python
+from racpy import Client, Session, Cluster, ClusterAdmin
+
+client = Client(rac_cli_path="C:\\rac.exe")
+session = Session(host="localhost", port=1545, client=client)
+
+# Получение UUID первого кластера (.firstid() эквивалентен Cluster.first()["cluster"])
+cluster_id = Cluster.firstid(session=session)
+
+# Получение списка администраторов кластера
+cluster_admins = ClusterAdmin.list(session=session, cluster_uuid=cluster_id)
+
+# Создание нового администратора кластера
+ClusterAdmin.create(session=session, cluster_uuid=cluster_id, name="Admin", pwd="Admin")
+
+# Удаление администратора кластера (с указанием авторизации)
+ClusterAdmin.remove(
+    session=session,
+    cluster_uuid=cluster_id,
+    name="Admin",
+    cluster_user="Admin",
+    cluster_pwd="Admin",
+)
+```
+
 ### Информационная база
 
 Класс информационной базы предоставляет статические методы для взаимодействия с информационными базами.
