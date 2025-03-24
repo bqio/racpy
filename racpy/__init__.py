@@ -7,6 +7,7 @@ from .cmd.infobase import Infobase
 from .cmd.process import Process
 from .cmd.server import Server
 from .cmd.session import UserSession
+from .cmd.manager import Manager
 
 __all__ = [
     "Client",
@@ -20,4 +21,5 @@ __all__ = [
     "Process",
     "Server",
     "UserSession",
+    "Manager",
 ]
