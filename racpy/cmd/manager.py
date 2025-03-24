@@ -41,3 +41,37 @@ class Manager:
             ),
             to_list,
         )
+
+    @staticmethod
+    def first(
+        session: Session,
+        cluster_uuid: str,
+        cluster_user: str | None = None,
+        cluster_pwd: str | None = None,
+    ) -> dict[str, str | int] | None:
+        managers = Manager.list(
+            session=session,
+            cluster_uuid=cluster_uuid,
+            cluster_user=cluster_user,
+            cluster_pwd=cluster_pwd,
+        )
+        if managers is None:
+            return managers
+        return managers[0]
+
+    @staticmethod
+    def firstid(
+        session: Session,
+        cluster_uuid: str,
+        cluster_user: str | None = None,
+        cluster_pwd: str | None = None,
+    ) -> str | None:
+        manager = Manager.first(
+            session=session,
+            cluster_uuid=cluster_uuid,
+            cluster_user=cluster_user,
+            cluster_pwd=cluster_pwd,
+        )
+        if manager is None:
+            return manager
+        return manager["manager"]
