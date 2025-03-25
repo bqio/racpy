@@ -8,11 +8,20 @@
 pip install git+https://github.com/bqio/racpy.git
 ```
 
+## TODO
+
+- service module
+- lock module
+- rule module
+- profile module
+- counter module
+- limit module
+
 ## Сущности
 
 ### Клиент
 
-Клиент необходим, чтобы указать путь до утилиты RAC и создать сессию подключения.
+Клиент необходим, чтобы указать путь до утилиты RAC и создать сессию подключения. Можно создавать сразу несколько клиентов для взаимодействия с разными утилитами RAC.
 
 ```python
 from racpy import Client
