@@ -391,8 +391,8 @@ connection_id = Connection.firstid(
     cluster_uuid=cluster_id,
     process_uuid=process_id,
     infobase_uuid=infobase_id,
-    infobase_user="Администратор",
-    infobase_pwd="20062006Sv!_",
+    infobase_user="admin",
+    infobase_pwd="password",
 )
 user_session_id = UserSession.firstid(
     session=session, cluster_uuid=cluster_id, infobase_uuid=infobase_id
