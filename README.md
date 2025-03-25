@@ -366,7 +366,7 @@ session = Session(host="localhost", port=1545, client=client)
 cluster_id = Cluster.firstid(session=session)
 
 # Получение списка сервисов
-services = Service.first(session=session, cluster_uuid=cluster_id)
+services = Service.list(session=session, cluster_uuid=cluster_id)
 ```
 
 ### Блокировки
