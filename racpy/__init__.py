@@ -8,6 +8,8 @@ from .cmd.process import Process
 from .cmd.server import Server
 from .cmd.session import UserSession
 from .cmd.manager import Manager
+from .cmd.service import Service
+from .cmd.lock import Lock
 
 __all__ = [
     "Client",
@@ -22,4 +24,6 @@ __all__ = [
     "Server",
     "UserSession",
     "Manager",
+    "Service",
+    "Lock",
 ]

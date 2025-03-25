@@ -10,8 +10,6 @@ pip install git+https://github.com/bqio/racpy.git
 
 ## TODO
 
-- service module
-- lock module
 - rule module
 - profile module
 - counter module
@@ -351,5 +349,61 @@ managers = Manager.list(session=session, cluster_uuid=cluster_id)
 manager_id = managers[0]["manager"]
 manager_info = Manager.info(
     session=session, cluster_uuid=cluster_id, manager_uuid=manager_id
+)
+```
+
+### Сервис менеджера кластера
+
+Класс сервиса менеджера кластера предоставляет статические методы для взаимодействия с сервером администрирования в режиме управления сервисами менеджера кластера.
+
+```python
+from racpy import Client, Session, Cluster, Service
+
+client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin\\rac.exe")
+session = Session(host="localhost", port=1545, client=client)
+
+# Получение UUID первого кластера
+cluster_id = Cluster.firstid(session=session)
+
+# Получение списка сервисов
+services = Service.first(session=session, cluster_uuid=cluster_id)
+```
+
+### Блокировки
+
+Класс блокировок предоставляет статические методы для взаимодействия с сервером администрирования в режиме управления блокировками.
+
+```python
+from racpy import Client, Session, Cluster, Server, Process, Infobase, Connection, UserSession, Lock
+
+client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin\\rac.exe")
+session = Session(host="localhost", port=1545, client=client)
+
+# Получение необходимых UUID
+cluster_id = Cluster.firstid(session=session)
+server_id = Server.firstid(session=session, cluster_uuid=cluster_id)
+process_id = Process.firstid(
+    session=session, cluster_uuid=cluster_id, server_uuid=server_id
+)
+infobase_id = Infobase.firstid(session=session, cluster_uuid=cluster_id)
+connection_id = Connection.firstid(
+    session=session,
+    cluster_uuid=cluster_id,
+    process_uuid=process_id,
+    infobase_uuid=infobase_id,
+    infobase_user="Администратор",
+    infobase_pwd="20062006Sv!_",
+)
+user_session_id = UserSession.firstid(
+    session=session, cluster_uuid=cluster_id, infobase_uuid=infobase_id
+)
+
+# Получение списка блокировок
+locks = Lock.list(
+    session=session,
+    cluster_uuid=cluster_id,
+    infobase_uuid=infobase_id,
+    connection_uuid=connection_id,
+    user_session_uuid=user_session_id,
 )
 ```
