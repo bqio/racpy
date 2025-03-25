@@ -26,7 +26,7 @@ pip install git+https://github.com/bqio/racpy.git
 ```python
 from racpy import Client
 
-client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin")
+client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin\\rac.exe")
 linux_client = Client(rac_cli_path="/opt/1cv8/x86_64/<version>/rac")
 ```
 
@@ -37,7 +37,7 @@ linux_client = Client(rac_cli_path="/opt/1cv8/x86_64/<version>/rac")
 ```python
 from racpy import Client, Session
 
-client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin")
+client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin\\rac.exe")
 session = Session(host="server", port=1545, client=client)
 local_session = Session(host="localhost", port=1545, client=client)
 ```
@@ -49,7 +49,7 @@ local_session = Session(host="localhost", port=1545, client=client)
 ```python
 from racpy import Client, Session, Agent
 
-client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin")
+client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin\\rac.exe")
 session = Session(host="localhost", port=1545, client=client)
 
 # Получение версии агента
@@ -63,7 +63,7 @@ Agent.version(session=session)
 ```python
 from racpy import Client, Session, AgentAdmin
 
-client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin")
+client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin\\rac.exe")
 session = Session(host="localhost", port=1545, client=client)
 
 # Создание нового администратора (без существующих в системе)
@@ -83,7 +83,7 @@ AgentAdmin.remove(session=session, name="Admin", agent_user="Admin")
 ```python
 from racpy import Client, Session, Cluster
 
-client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin")
+client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin\\rac.exe")
 session = Session(host="localhost", port=1545, client=client)
 
 # Получение списка кластеров
@@ -111,7 +111,7 @@ Cluster.remove(session=session, cluster_uuid=cluster_id)
 ```python
 from racpy import Client, Session, Cluster, ClusterAdmin
 
-client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin")
+client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin\\rac.exe")
 session = Session(host="localhost", port=1545, client=client)
 
 # Получение UUID первого кластера (.firstid() эквивалентен Cluster.first()["cluster"])
@@ -140,7 +140,7 @@ ClusterAdmin.remove(
 ```python
 from racpy import Client, Session, Cluster, Infobase
 
-client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin")
+client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin\\rac.exe")
 session = Session(host="localhost", port=1545, client=client)
 
 # Получение UUID первого кластера (.first() эквивалентен Cluster.list()[0])
@@ -192,7 +192,7 @@ Infobase.remove(
 ```python
 from racpy import Client, Session, Cluster, Server
 
-client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin")
+client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin\\rac.exe")
 session = Session(host="localhost", port=1545, client=client)
 
 # Получение UUID первого кластера (.firstid() эквивалентен Cluster.first()["cluster"])
@@ -234,7 +234,7 @@ Server.remove(session=session, cluster_uuid=cluster_id, server_uuid=server_id)
 ```python
 from racpy import Client, Session, Cluster, Server, Process
 
-client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin")
+client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin\\rac.exe")
 session = Session(host="localhost", port=1545, client=client)
 
 # Получение UUID первого кластера
@@ -260,7 +260,7 @@ process_info = Process.info(
 ```python
 from racpy import Client, Session, Cluster, Server, Infobase, Process, Connection
 
-client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin")
+client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin\\rac.exe")
 session = Session(host="localhost", port=1545, client=client)
 
 # Получение необходимых UUID
@@ -301,7 +301,7 @@ Connection.kill(
 ```python
 from racpy import Client, Session, Cluster, Infobase, UserSession
 
-client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin")
+client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin\\rac.exe")
 session = Session(host="localhost", port=1545, client=client)
 
 # Получение необходимых UUID
@@ -338,7 +338,7 @@ UserSession.kill(
 ```python
 from racpy import Client, Session, Cluster, Manager
 
-client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin")
+client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin\\rac.exe")
 session = Session(host="localhost", port=1545, client=client)
 
 # Получение UUID первого кластера
