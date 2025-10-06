@@ -20,3 +20,7 @@ def b2of(b: bool) -> str:
 
 def b2da(b: bool) -> str:
     return "allow" if b else "deny"
+
+
+def b2ana(b: bool) -> str:
+    return "analyze" if b else "not-analyze"

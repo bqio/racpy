@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from typing import TypeVar, Callable
 from subprocess import run
 
@@ -9,15 +8,15 @@ from . import errors
 T = TypeVar("T")
 
 
-@dataclass(kw_only=True)
 class Session:
-    host: str
-    port: int
-    client: Client
+    def __init__(self, client: Client, host: str, port: int = 1545):
+        self.client = client
+        self.host = host
+        self.port = port
 
     def exec(self, command: Command, handler: Callable[[str], T] = None) -> T | None:
         args = [
-            self.client.rac_cli_path,
+            self.client.rac_path,
             f"{self.host}:{self.port}",
         ] + command.args
         try:

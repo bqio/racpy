@@ -134,7 +134,25 @@ class UnknownHostError(Exception):
         super().__init__("Компьютер отсутствует в сети или недоступен")
 
 
+class CounterNotFoundError(Exception):
+    def __init__(self, stderr: str):
+        super().__init__("Счетчик с указанным идентификатором не найден")
+
+
+class LimitNotFoundError(Exception):
+    def __init__(self, stderr: str):
+        super().__init__("Ограничение ресурсов с указанным идентификатором не найдено")
+
+
 errors = [
+    (
+        r"Ограничение ресурсов с указанным идентификатором не найдено",
+        LimitNotFoundError,
+    ),
+    (
+        r"Счетчик с указанным идентификатором не найден",
+        CounterNotFoundError,
+    ),
     (
         r"Рабочий сервер является центральным. Удаление невозможно",
         ServerIsMainError,

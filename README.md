@@ -12,8 +12,6 @@ pip install git+https://github.com/bqio/racpy.git
 
 - rule module
 - profile module
-- counter module
-- limit module
 
 ## Сущности
 
@@ -24,8 +22,8 @@ pip install git+https://github.com/bqio/racpy.git
 ```python
 from racpy import Client
 
-client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin\\rac.exe")
-linux_client = Client(rac_cli_path="/opt/1cv8/x86_64/<version>/rac")
+client = Client("C:\\Program Files\\1cv8\\<version>\\bin\\rac.exe")
+linux_client = Client("/opt/1cv8/x86_64/<version>/rac")
 ```
 
 ### Сессия
@@ -35,10 +33,14 @@ linux_client = Client(rac_cli_path="/opt/1cv8/x86_64/<version>/rac")
 ```python
 from racpy import Client, Session
 
-client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin\\rac.exe")
-session = Session(host="server", port=1545, client=client)
-local_session = Session(host="localhost", port=1545, client=client)
+client = Client("C:\\Program Files\\1cv8\\<version>\\bin\\rac.exe")
+# Порт по умолчанию 1545
+session = Session(client, "host")
+# Произвольный порт
+local_session = Session(client, "host2", 1546)
 ```
+
+В следующих примерах объявление клиента и сессии будет опускаться.
 
 ### Агент
 
@@ -47,8 +49,7 @@ local_session = Session(host="localhost", port=1545, client=client)
 ```python
 from racpy import Client, Session, Agent
 
-client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin\\rac.exe")
-session = Session(host="localhost", port=1545, client=client)
+...
 
 # Получение версии агента
 Agent.version(session=session)
@@ -61,8 +62,7 @@ Agent.version(session=session)
 ```python
 from racpy import Client, Session, AgentAdmin
 
-client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin\\rac.exe")
-session = Session(host="localhost", port=1545, client=client)
+...
 
 # Создание нового администратора (без существующих в системе)
 AgentAdmin.create(session=session, name="Admin")
@@ -81,8 +81,7 @@ AgentAdmin.remove(session=session, name="Admin", agent_user="Admin")
 ```python
 from racpy import Client, Session, Cluster
 
-client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin\\rac.exe")
-session = Session(host="localhost", port=1545, client=client)
+...
 
 # Получение списка кластеров
 cluster_list = Cluster.list(session=session)
@@ -109,8 +108,7 @@ Cluster.remove(session=session, cluster_uuid=cluster_id)
 ```python
 from racpy import Client, Session, Cluster, ClusterAdmin
 
-client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin\\rac.exe")
-session = Session(host="localhost", port=1545, client=client)
+...
 
 # Получение UUID первого кластера (.firstid() эквивалентен Cluster.first()["cluster"])
 cluster_id = Cluster.firstid(session=session)
@@ -138,8 +136,7 @@ ClusterAdmin.remove(
 ```python
 from racpy import Client, Session, Cluster, Infobase
 
-client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin\\rac.exe")
-session = Session(host="localhost", port=1545, client=client)
+...
 
 # Получение UUID первого кластера (.first() эквивалентен Cluster.list()[0])
 cluster_id = Cluster.first(session=session)["cluster"]
@@ -190,8 +187,7 @@ Infobase.remove(
 ```python
 from racpy import Client, Session, Cluster, Server
 
-client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin\\rac.exe")
-session = Session(host="localhost", port=1545, client=client)
+...
 
 # Получение UUID первого кластера (.firstid() эквивалентен Cluster.first()["cluster"])
 cluster_id = Cluster.firstid(session=session)
@@ -232,8 +228,7 @@ Server.remove(session=session, cluster_uuid=cluster_id, server_uuid=server_id)
 ```python
 from racpy import Client, Session, Cluster, Server, Process
 
-client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin\\rac.exe")
-session = Session(host="localhost", port=1545, client=client)
+...
 
 # Получение UUID первого кластера
 cluster_id = Cluster.firstid(session=session)
@@ -258,8 +253,7 @@ process_info = Process.info(
 ```python
 from racpy import Client, Session, Cluster, Server, Infobase, Process, Connection
 
-client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin\\rac.exe")
-session = Session(host="localhost", port=1545, client=client)
+...
 
 # Получение необходимых UUID
 cluster_id = Cluster.firstid(session=session)
@@ -299,8 +293,7 @@ Connection.kill(
 ```python
 from racpy import Client, Session, Cluster, Infobase, UserSession
 
-client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin\\rac.exe")
-session = Session(host="localhost", port=1545, client=client)
+...
 
 # Получение необходимых UUID
 cluster_id = Cluster.firstid(session=session)
@@ -336,8 +329,7 @@ UserSession.kill(
 ```python
 from racpy import Client, Session, Cluster, Manager
 
-client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin\\rac.exe")
-session = Session(host="localhost", port=1545, client=client)
+...
 
 # Получение UUID первого кластера
 cluster_id = Cluster.firstid(session=session)
@@ -359,8 +351,7 @@ manager_info = Manager.info(
 ```python
 from racpy import Client, Session, Cluster, Service
 
-client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin\\rac.exe")
-session = Session(host="localhost", port=1545, client=client)
+...
 
 # Получение UUID первого кластера
 cluster_id = Cluster.firstid(session=session)
@@ -376,8 +367,7 @@ services = Service.list(session=session, cluster_uuid=cluster_id)
 ```python
 from racpy import Client, Session, Cluster, Server, Process, Infobase, Connection, UserSession, Lock
 
-client = Client(rac_cli_path="C:\\Program Files\\1cv8\\<version>\\bin\\rac.exe")
-session = Session(host="localhost", port=1545, client=client)
+...
 
 # Получение необходимых UUID
 cluster_id = Cluster.firstid(session=session)
@@ -406,4 +396,78 @@ locks = Lock.list(
     connection_uuid=connection_id,
     user_session_uuid=user_session_id,
 )
+```
+
+### Счётчики потребления ресурсов
+Данный класс предоставляет статические методы для взаимодействия с сервером администрирования в режиме управления счётчиками потребления ресурсов.
+
+```python
+from racpy import Client, Session, Cluster, Counter
+
+...
+
+# Получение необходимых UUID
+cluster_id = Cluster.firstid(session=session)
+
+# Получение списка счётчиков
+counters = Counter.list(session=session, cluster_uuid=cluster_id)
+
+# Создать или обновить счётчик
+Counter.update(
+    session=session,
+    cluster_uuid=cluster_id,
+    counter_name="test",
+    collection_time=8,
+    group="users",
+    filter_type="all",
+    filter="test",
+    descr="test descr",
+)
+
+# Получение счётчика по имени
+counter = Counter.info(session=session, cluster_uuid=cluster_id, counter_name="test")
+
+# Очистить счётчик
+Counter.clear(session=session, cluster_uuid=cluster_id, counter_name="test")
+
+# Получить текущие значения счётчика
+values = Counter.values(session=session, cluster_uuid=cluster_id, counter_name="test")
+
+# Получить накопленные значения счётчика
+accumulated_values = Counter.accumulated_values(
+    session=session, cluster_uuid=cluster_id, counter_name="test"
+)
+
+# Удалить счётчик
+Counter.remove(session=session, cluster_uuid=cluster_id, counter_name="test")
+```
+
+### Ограничения потребления ресурсов
+Данный класс предоставляет статические методы для взаимодействия с сервером администрирования в режиме управления ограничениями потребления ресурсов.
+
+```python
+from racpy import Client, Session, Cluster, Limit
+
+...
+
+# Получение необходимых UUID
+cluster_id = Cluster.firstid(session=session)
+
+# Получение списка ограничений
+limits = Limit.list(session=session, cluster_uuid=cluster_id)
+
+# Создать или обновить ограничение
+Limit.update(
+    session=session,
+    cluster_uuid=cluster_id,
+    limit_name="test",
+    action="set-low-priority-thread",
+    counter_name="test",
+)
+
+# Получение ограничения по имени
+limit = Limit.info(session=session, cluster_uuid=cluster_id, limit_name="test")
+
+# Удалить ограничения
+Limit.remove(session=session, cluster_uuid=cluster_id, limit_name="test")
 ```

@@ -1,7 +1,6 @@
-from dataclasses import dataclass
 from pathlib import Path
 
 
-@dataclass(kw_only=True)
 class Client:
-    rac_cli_path: Path | str
+    def __init__(self, rac_path: Path | str):
+        self.rac_path = rac_path

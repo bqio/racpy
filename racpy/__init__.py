@@ -10,6 +10,8 @@ from .cmd.session import UserSession
 from .cmd.manager import Manager
 from .cmd.service import Service
 from .cmd.lock import Lock
+from .cmd.limit import Limit
+from .cmd.counter import Counter
 
 __all__ = [
     "Client",
@@ -26,4 +28,6 @@ __all__ = [
     "Manager",
     "Service",
     "Lock",
+    "Limit",
+    "Counter",
 ]
