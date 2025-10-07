@@ -1,5 +1,6 @@
 from .command import Command, Arg, Flag
 from ..session import Session
+from ..types import Entry, EntryUUID, ListOfEntry
 from ..handlers import to_list, to_dict
 
 
@@ -7,12 +8,12 @@ class UserSession:
     @staticmethod
     def info(
         session: Session,
-        cluster_uuid: str,
-        user_session_uuid: str,
+        cluster_uuid: EntryUUID,
+        user_session_uuid: EntryUUID,
         licenses: bool = False,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> dict[str, str | int] | None:
+    ) -> Entry:
         return session.exec(
             Command(
                 Arg("session"),
@@ -29,13 +30,13 @@ class UserSession:
     @staticmethod
     def list(
         session: Session,
-        cluster_uuid: str,
-        infobase_uuid: str,
+        cluster_uuid: EntryUUID,
+        infobase_uuid: EntryUUID,
         licenses: bool = False,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> list[dict[str, str | int]] | None:
-        return session.exec(
+    ) -> ListOfEntry:
+        sessions = session.exec(
             Command(
                 Arg("session"),
                 Arg("list"),
@@ -47,44 +48,47 @@ class UserSession:
             ),
             to_list,
         )
+        if sessions is None or len(sessions) == 0:
+            return []
+        return sessions
 
     @staticmethod
     def first(
         session: Session,
-        cluster_uuid: str,
-        infobase_uuid: str,
+        cluster_uuid: EntryUUID,
+        infobase_uuid: EntryUUID,
         licenses: bool = False,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> dict[str, str | int] | None:
+    ) -> Entry | None:
         user_sessions = UserSession.list(
             session, cluster_uuid, infobase_uuid, licenses, cluster_user, cluster_pwd
         )
-        if user_sessions is None:
-            return user_sessions
+        if len(user_sessions) == 0:
+            return None
         return user_sessions[0]
 
     @staticmethod
     def firstid(
         session: Session,
-        cluster_uuid: str,
-        infobase_uuid: str,
+        cluster_uuid: EntryUUID,
+        infobase_uuid: EntryUUID,
         licenses: bool = False,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> str | None:
+    ) -> EntryUUID | None:
         user_session = UserSession.first(
             session, cluster_uuid, infobase_uuid, licenses, cluster_user, cluster_pwd
         )
-        if user_session is None:
-            return user_session
-        return user_session["session"]
+        if user_session:
+            return user_session["session"]
+        return None
 
     @staticmethod
     def kill(
         session: Session,
-        cluster_uuid: str,
-        user_session_uuid: str,
+        cluster_uuid: EntryUUID,
+        user_session_uuid: EntryUUID,
         error_message: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
@@ -104,8 +108,8 @@ class UserSession:
     @staticmethod
     def interrupt(
         session: Session,
-        cluster_uuid: str,
-        user_session_uuid: str,
+        cluster_uuid: EntryUUID,
+        user_session_uuid: EntryUUID,
         error_message: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,

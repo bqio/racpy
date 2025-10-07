@@ -9,7 +9,7 @@ T = TypeVar("T")
 
 
 class Session:
-    def __init__(self, client: Client, host: str, port: int = 1545):
+    def __init__(self, client: Client, host: str = "localhost", port: int = 1545):
         self.client = client
         self.host = host
         self.port = port

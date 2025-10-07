@@ -1,5 +1,6 @@
 from .command import Command, Arg, Flag
 from ..session import Session
+from ..types import EntryUUID, Entry, ListOfEntry
 from ..handlers import to_dict, to_list
 from ..utils import b2of, b2da, b2yn
 
@@ -8,13 +9,13 @@ class Infobase:
     @staticmethod
     def info(
         session: Session,
-        cluster_uuid: str,
-        infobase_uuid: str,
+        cluster_uuid: EntryUUID,
+        infobase_uuid: EntryUUID,
         infobase_user: str | None = None,
         infobase_pwd: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> dict[str, str | int]:
+    ) -> Entry:
         return session.exec(
             Command(
                 Arg("infobase"),
@@ -33,8 +34,8 @@ class Infobase:
     @staticmethod
     def create(
         session: Session,
-        cluster_uuid: str,
-        name: str,
+        cluster_uuid: EntryUUID,
+        infobase_name: str,
         db_server: str,
         db_name: str,
         locale: str,
@@ -49,13 +50,13 @@ class Infobase:
         descr: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> str:
+    ) -> EntryUUID:
         return session.exec(
             Command(
                 Arg("infobase"),
                 Arg("create"),
                 Arg(cluster_uuid, "--cluster={}"),
-                Arg(name, "--name={}"),
+                Arg(infobase_name, "--name={}"),
                 Arg(db_server, "--db-server={}"),
                 Arg(db_name, "--db-name={}"),
                 Arg(locale, "--locale={}"),
@@ -77,8 +78,8 @@ class Infobase:
     @staticmethod
     def update(
         session: Session,
-        cluster_uuid: str,
-        infobase_uuid: str,
+        cluster_uuid: EntryUUID,
+        infobase_uuid: EntryUUID,
         infobase_user: str | None = None,
         infobase_pwd: str | None = None,
         dbms: str | None = None,
@@ -152,8 +153,8 @@ class Infobase:
     @staticmethod
     def remove(
         session: Session,
-        cluster_uuid: str,
-        infobase_uuid: str,
+        cluster_uuid: EntryUUID,
+        infobase_uuid: EntryUUID,
         drop_database: bool = False,
         clear_database: bool = False,
         infobase_user: str | None = None,
@@ -179,11 +180,11 @@ class Infobase:
     @staticmethod
     def list(
         session: Session,
-        cluster_uuid: str,
+        cluster_uuid: EntryUUID,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> list[dict[str, str | int]] | None:
-        return session.exec(
+    ) -> ListOfEntry:
+        infobases = session.exec(
             Command(
                 Arg("infobase"),
                 Arg("summary"),
@@ -194,27 +195,30 @@ class Infobase:
             ),
             to_list,
         )
+        if infobases is None or len(infobases) == 0:
+            return []
+        return infobases
 
     @staticmethod
     def first(
         session: Session,
-        cluster_uuid: str,
+        cluster_uuid: EntryUUID,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> dict[str, str | int] | None:
+    ) -> Entry | None:
         infobases = Infobase.list(session, cluster_uuid, cluster_user, cluster_pwd)
-        if infobases is None:
-            return infobases
+        if len(infobases) == 0:
+            return None
         return infobases[0]
 
     @staticmethod
     def firstid(
         session: Session,
-        cluster_uuid: str,
+        cluster_uuid: EntryUUID,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> str | None:
+    ) -> EntryUUID | None:
         infobase = Infobase.first(session, cluster_uuid, cluster_user, cluster_pwd)
-        if infobase is None:
-            return infobase
-        return infobase["infobase"]
+        if infobase:
+            return infobase["infobase"]
+        return None

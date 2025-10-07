@@ -13,6 +13,15 @@ from .cmd.lock import Lock
 from .cmd.limit import Limit
 from .cmd.counter import Counter
 from .cmd.rule import Rule
+from .cmd.profile import (
+    Profile,
+    ProfileACLAddin,
+    ProfileACLApp,
+    ProfileACLCOM,
+    ProfileACLDirectory,
+    ProfileACLInet,
+    ProfileACLModule,
+)
 
 __all__ = [
     "Client",
@@ -32,4 +41,11 @@ __all__ = [
     "Limit",
     "Counter",
     "Rule",
+    "Profile",
+    "ProfileACLAddin",
+    "ProfileACLApp",
+    "ProfileACLCOM",
+    "ProfileACLDirectory",
+    "ProfileACLInet",
+    "ProfileACLModule",
 ]

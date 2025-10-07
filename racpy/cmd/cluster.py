@@ -1,8 +1,8 @@
 from .command import Command, Arg
 from ..session import Session
+from ..types import Entry, EntryUUID, ListOfEntry
 from ..handlers import to_list, to_dict
 from ..utils import b2yn
-from ..errors import ClustersNotFoundError
 
 
 class Cluster:
@@ -24,7 +24,7 @@ class Cluster:
         errors_count_threshold: int | None = None,
         agent_user: str | None = None,
         agent_pwd: str | None = None,
-    ) -> str:
+    ) -> EntryUUID:
         return session.exec(
             Command(
                 Arg("cluster"),
@@ -53,7 +53,7 @@ class Cluster:
     @staticmethod
     def update(
         session: Session,
-        cluster_uuid: str,
+        cluster_uuid: EntryUUID,
         name: str | None = None,
         load_balancing_mode: str | None = None,
         kill_problem_processes: bool | None = None,
@@ -95,7 +95,7 @@ class Cluster:
     @staticmethod
     def remove(
         session: Session,
-        cluster_uuid: str,
+        cluster_uuid: EntryUUID,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
     ) -> None:
@@ -110,7 +110,7 @@ class Cluster:
         )
 
     @staticmethod
-    def list(session: Session) -> list[dict[str, str | int]]:
+    def list(session: Session) -> ListOfEntry:
         clusters = session.exec(
             Command(
                 Arg("cluster"),
@@ -119,19 +119,25 @@ class Cluster:
             to_list,
         )
         if clusters is None or len(clusters) == 0:
-            raise ClustersNotFoundError
+            return []
         return clusters
 
     @staticmethod
-    def first(session: Session) -> dict[str, str | int]:
-        return Cluster.list(session)[0]
+    def first(session: Session) -> Entry | None:
+        clusters = Cluster.list(session)
+        if len(clusters) == 0:
+            return None
+        return clusters[0]
 
     @staticmethod
-    def firstid(session: Session) -> str:
-        return Cluster.first(session)["cluster"]
+    def firstid(session: Session) -> EntryUUID | None:
+        cluster = Cluster.first(session)
+        if cluster:
+            return cluster["cluster"]
+        return None
 
     @staticmethod
-    def info(session: Session, cluster_uuid: str) -> dict[str, str | int]:
+    def info(session: Session, cluster_uuid: EntryUUID) -> Entry:
         return session.exec(
             Command(
                 Arg("cluster"),
@@ -146,11 +152,11 @@ class ClusterAdmin:
     @staticmethod
     def list(
         session: Session,
-        cluster_uuid: str,
+        cluster_uuid: EntryUUID,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> list[dict[str, str | int]] | None:
-        return session.exec(
+    ) -> ListOfEntry:
+        admins = session.exec(
             Command(
                 Arg("cluster"),
                 Arg("admin"),
@@ -161,13 +167,28 @@ class ClusterAdmin:
             ),
             to_list,
         )
+        if admins is None or len(admins) == 0:
+            return []
+        return admins
+
+    @staticmethod
+    def first(
+        session: Session,
+        cluster_uuid: EntryUUID,
+        cluster_user: str | None = None,
+        cluster_pwd: str | None = None,
+    ) -> Entry | None:
+        admins = ClusterAdmin.list(session, cluster_uuid, cluster_user, cluster_pwd)
+        if len(admins) == 0:
+            return None
+        return admins[0]
 
     @staticmethod
     def create(
         session: Session,
-        cluster_uuid: str,
-        name: str | None = None,
-        auth: str = "pwd",
+        cluster_uuid: EntryUUID,
+        admin_name: str | None = None,
+        auth_type: str = "pwd",
         pwd: str | None = None,
         descr: str | None = None,
         os_user: str | None = None,
@@ -182,8 +203,8 @@ class ClusterAdmin:
                 Arg("admin"),
                 Arg("register"),
                 Arg(cluster_uuid, "--cluster={}"),
-                Arg(name, "--name={}"),
-                Arg(auth, "--auth={}"),
+                Arg(admin_name, "--name={}"),
+                Arg(auth_type, "--auth={}"),
                 Arg(pwd, "--pwd={}"),
                 Arg(descr, "--descr={}"),
                 Arg(os_user, "--os-user={}"),
@@ -197,8 +218,8 @@ class ClusterAdmin:
     @staticmethod
     def remove(
         session: Session,
-        cluster_uuid: str,
-        name: str,
+        cluster_uuid: EntryUUID,
+        admin_name: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
     ) -> None:
@@ -208,7 +229,7 @@ class ClusterAdmin:
                 Arg("admin"),
                 Arg("remove"),
                 Arg(cluster_uuid, "--cluster={}"),
-                Arg(name, "--name={}"),
+                Arg(admin_name, "--name={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
             ),

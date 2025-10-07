@@ -2,7 +2,6 @@ from .command import Command, Arg
 from ..session import Session
 from ..types import ListOfEntry, Entry
 from ..handlers import to_str, to_list
-from ..errors import AgentAdminsNotFoundError
 
 
 class Agent:
@@ -48,7 +47,7 @@ class AgentAdmin:
     @staticmethod
     def remove(
         session: Session,
-        name: str,
+        admin_name: str,
         agent_user: str | None = None,
         agent_pwd: str | None = None,
     ) -> None:
@@ -57,7 +56,7 @@ class AgentAdmin:
                 Arg("agent"),
                 Arg("admin"),
                 Arg("remove"),
-                Arg(name, "--name={}"),
+                Arg(admin_name, "--name={}"),
                 Arg(agent_user, "--agent-user={}"),
                 Arg(agent_pwd, "--agent-pwd={}"),
             ),
@@ -66,8 +65,8 @@ class AgentAdmin:
     @staticmethod
     def create(
         session: Session,
-        name: str,
-        auth: str = "pwd",
+        admin_name: str,
+        auth_type: str = "pwd",
         pwd: str | None = None,
         descr: str | None = None,
         os_user: str | None = None,
@@ -79,8 +78,8 @@ class AgentAdmin:
                 Arg("agent"),
                 Arg("admin"),
                 Arg("register"),
-                Arg(name, "--name={}"),
-                Arg(auth, "--auth={}"),
+                Arg(admin_name, "--name={}"),
+                Arg(auth_type, "--auth={}"),
                 Arg(pwd, "--pwd={}"),
                 Arg(descr, "--descr={}"),
                 Arg(os_user, "--os-user={}"),

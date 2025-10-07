@@ -1,6 +1,6 @@
 from .command import Command, Arg
 from ..session import Session
-from ..types import Entry, ListOfEntry
+from ..types import Entry, ListOfEntry, EntryUUID
 from ..handlers import to_list, to_dict
 
 
@@ -8,11 +8,11 @@ class Limit:
     @staticmethod
     def list(
         session: Session,
-        cluster_uuid: str,
+        cluster_uuid: EntryUUID,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> ListOfEntry | None:
-        return session.exec(
+    ) -> ListOfEntry:
+        limits = session.exec(
             Command(
                 Arg("limit"),
                 Arg("list"),
@@ -22,11 +22,14 @@ class Limit:
             ),
             to_list,
         )
+        if limits is None or len(limits) == 0:
+            return []
+        return limits
 
     @staticmethod
     def info(
         session: Session,
-        cluster_uuid: str,
+        cluster_uuid: EntryUUID,
         limit_name: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
@@ -46,7 +49,7 @@ class Limit:
     @staticmethod
     def update(
         session: Session,
-        cluster_uuid: str,
+        cluster_uuid: EntryUUID,
         limit_name: str,
         action: str,
         counter_name: str,
@@ -95,7 +98,7 @@ class Limit:
     @staticmethod
     def remove(
         session: Session,
-        cluster_uuid: str,
+        cluster_uuid: EntryUUID,
         limit_name: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,

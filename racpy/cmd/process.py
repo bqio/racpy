@@ -1,5 +1,6 @@
 from .command import Command, Arg, Flag
 from ..session import Session
+from ..types import EntryUUID, Entry, ListOfEntry
 from ..handlers import to_list, to_dict
 
 
@@ -7,12 +8,12 @@ class Process:
     @staticmethod
     def info(
         session: Session,
-        cluster_uuid: str,
-        process_uuid: str,
+        cluster_uuid: EntryUUID,
+        process_uuid: EntryUUID,
         licenses: bool = False,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> dict[str, str | int]:
+    ) -> Entry:
         return session.exec(
             Command(
                 Arg("process"),
@@ -29,13 +30,13 @@ class Process:
     @staticmethod
     def list(
         session: Session,
-        cluster_uuid: str,
-        server_uuid: str,
+        cluster_uuid: EntryUUID,
+        server_uuid: EntryUUID,
         licenses: bool = False,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> list[dict[str, str | int]] | None:
-        return session.exec(
+    ) -> ListOfEntry:
+        processes = session.exec(
             Command(
                 Arg("process"),
                 Arg("list"),
@@ -47,35 +48,38 @@ class Process:
             ),
             to_list,
         )
+        if processes is None or len(processes) == 0:
+            return []
+        return processes
 
     @staticmethod
     def first(
         session: Session,
-        cluster_uuid: str,
-        server_uuid: str,
+        cluster_uuid: EntryUUID,
+        server_uuid: EntryUUID,
         licenses: bool = False,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> dict[str, str | int] | None:
+    ) -> Entry | None:
         processes = Process.list(
             session, cluster_uuid, server_uuid, licenses, cluster_user, cluster_pwd
         )
-        if processes is None:
-            return processes
+        if len(processes) == 0:
+            return None
         return processes[0]
 
     @staticmethod
     def firstid(
         session: Session,
-        cluster_uuid: str,
-        server_uuid: str,
+        cluster_uuid: EntryUUID,
+        server_uuid: EntryUUID,
         licenses: bool = False,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> str | None:
+    ) -> EntryUUID | None:
         process = Process.first(
             session, cluster_uuid, server_uuid, licenses, cluster_user, cluster_pwd
         )
-        if process is None:
-            return process
-        return process["process"]
+        if process:
+            return process["process"]
+        return None

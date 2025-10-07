@@ -44,8 +44,13 @@ class ClusterCredentialsError(Exception):
 class AgentCredentialsError(Exception):
     def __init__(self, stderr: str):
         super().__init__(
-            "Администратор агента кластера не аутентифицирован. Передайте корректные Credentials администратора агента кластера."
+            "Администратор агента кластера не аутентифицирован. Передайте корректные данные авторизации администратора агента кластера."
         )
+
+
+class CentralServerCredentialsError(Exception):
+    def __init__(self, stderr: str):
+        super().__init__("Администратор центрального сервера не аутентифицирован.")
 
 
 class AgentAdminCreateError(Exception):
@@ -224,7 +229,7 @@ errors = [
     ),
     (
         r".*Администратор центрального сервера не аутентифицирован.*",
-        AgentCredentialsError,
+        CentralServerCredentialsError,
     ),
     (
         r"Недостаточно прав пользователя на информационную базу.*",

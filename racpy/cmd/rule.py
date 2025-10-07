@@ -8,7 +8,7 @@ class Rule:
     @staticmethod
     def apply(
         session: Session,
-        cluster_uuid: str,
+        cluster_uuid: EntryUUID,
         partial: bool = False,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
@@ -27,9 +27,9 @@ class Rule:
     @staticmethod
     def info(
         session: Session,
-        cluster_uuid: str,
-        server_uuid: str,
-        rule_uuid: str,
+        cluster_uuid: EntryUUID,
+        server_uuid: EntryUUID,
+        rule_uuid: EntryUUID,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
     ) -> Entry:
@@ -50,8 +50,8 @@ class Rule:
     @staticmethod
     def list(
         session: Session,
-        cluster_uuid: str,
-        server_uuid: str,
+        cluster_uuid: EntryUUID,
+        server_uuid: EntryUUID,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
     ) -> ListOfEntry:
@@ -71,10 +71,36 @@ class Rule:
         return rules
 
     @staticmethod
-    def insert(
+    def first(
         session: Session,
-        cluster_uuid: str,
-        server_uuid: str,
+        cluster_uuid: EntryUUID,
+        server_uuid: EntryUUID,
+        cluster_user: str | None = None,
+        cluster_pwd: str | None = None,
+    ) -> Entry | None:
+        rules = Rule.list(session, cluster_uuid, server_uuid, cluster_user, cluster_pwd)
+        if len(rules) == 0:
+            return None
+        return rules[0]
+
+    @staticmethod
+    def firstid(
+        session: Session,
+        cluster_uuid: EntryUUID,
+        server_uuid: EntryUUID,
+        cluster_user: str | None = None,
+        cluster_pwd: str | None = None,
+    ) -> EntryUUID | None:
+        rule = Rule.first(session, cluster_uuid, server_uuid, cluster_user, cluster_pwd)
+        if rule:
+            return rule["rule"]
+        return None
+
+    @staticmethod
+    def create(
+        session: Session,
+        cluster_uuid: EntryUUID,
+        server_uuid: EntryUUID,
         position: int,
         object_type: str | None = None,
         infobase_name: str | None = None,
@@ -106,9 +132,9 @@ class Rule:
     @staticmethod
     def update(
         session: Session,
-        cluster_uuid: str,
-        server_uuid: str,
-        rule_uuid: str,
+        cluster_uuid: EntryUUID,
+        server_uuid: EntryUUID,
+        rule_uuid: EntryUUID,
         position: int,
         object_type: str | None = None,
         infobase_name: str | None = None,
@@ -139,9 +165,9 @@ class Rule:
     @staticmethod
     def remove(
         session: Session,
-        cluster_uuid: str,
-        server_uuid: str,
-        rule_uuid: str,
+        cluster_uuid: EntryUUID,
+        server_uuid: EntryUUID,
+        rule_uuid: EntryUUID,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
     ) -> None:

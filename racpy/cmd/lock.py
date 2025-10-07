@@ -1,5 +1,6 @@
 from .command import Command, Arg
 from ..session import Session
+from ..types import EntryUUID, Entry, ListOfEntry
 from ..handlers import to_list
 
 
@@ -7,14 +8,14 @@ class Lock:
     @staticmethod
     def list(
         session: Session,
-        cluster_uuid: str,
-        infobase_uuid: str,
-        connection_uuid: str,
-        user_session_uuid: str,
+        cluster_uuid: EntryUUID,
+        infobase_uuid: EntryUUID,
+        connection_uuid: EntryUUID,
+        user_session_uuid: EntryUUID,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> list[dict[str, str | int]] | None:
-        return session.exec(
+    ) -> ListOfEntry:
+        locks = session.exec(
             Command(
                 Arg("lock"),
                 Arg("list"),
@@ -27,17 +28,20 @@ class Lock:
             ),
             to_list,
         )
+        if locks is None or len(locks) == 0:
+            return []
+        return locks
 
     @staticmethod
     def first(
         session: Session,
-        cluster_uuid: str,
-        infobase_uuid: str,
-        connection_uuid: str,
-        user_session_uuid: str,
+        cluster_uuid: EntryUUID,
+        infobase_uuid: EntryUUID,
+        connection_uuid: EntryUUID,
+        user_session_uuid: EntryUUID,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> dict[str, str | int] | None:
+    ) -> Entry | None:
         locks = Lock.list(
             session,
             cluster_uuid,
@@ -47,6 +51,6 @@ class Lock:
             cluster_user,
             cluster_pwd,
         )
-        if locks is None:
-            return locks
+        if len(locks) == 0:
+            return None
         return locks[0]

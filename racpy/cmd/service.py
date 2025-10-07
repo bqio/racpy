@@ -1,5 +1,6 @@
 from .command import Command, Arg
 from ..session import Session
+from ..types import Entry, EntryUUID, ListOfEntry
 from ..handlers import to_list
 
 
@@ -7,11 +8,11 @@ class Service:
     @staticmethod
     def list(
         session: Session,
-        cluster_uuid: str,
+        cluster_uuid: EntryUUID,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> list[dict[str, str | int]] | None:
-        return session.exec(
+    ) -> ListOfEntry:
+        services = session.exec(
             Command(
                 Arg("service"),
                 Arg("list"),
@@ -21,6 +22,9 @@ class Service:
             ),
             to_list,
         )
+        if services is None or len(services) == 0:
+            return []
+        return services
 
     @staticmethod
     def first(
@@ -28,8 +32,8 @@ class Service:
         cluster_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> dict[str, str | int] | None:
+    ) -> Entry | None:
         services = Service.list(session, cluster_uuid, cluster_user, cluster_pwd)
-        if services is None:
-            return services
+        if len(services) == 0:
+            return None
         return services[0]
