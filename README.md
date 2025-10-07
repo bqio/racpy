@@ -37,6 +37,8 @@ client = Client("C:\\Program Files\\1cv8\\<version>\\bin\\rac.exe")
 session = Session(client, "host")
 # Произвольный порт
 local_session = Session(client, "host2", 1546)
+# host=localhost, port=1545
+localhost_session = Session(client)
 ```
 
 В следующих примерах объявление клиента и сессии будет опускаться.
@@ -312,7 +314,7 @@ user_session_info = UserSession.info(
     licenses=True,
 )
 
-# Уничтожаем активный сеанс
+# Уничтожение активного сеанса
 UserSession.kill(
     session=session,
     cluster_uuid=cluster_id,
@@ -411,7 +413,7 @@ cluster_id = Cluster.firstid(session=session)
 # Получение списка счётчиков
 counters = Counter.list(session=session, cluster_uuid=cluster_id)
 
-# Создать или обновить счётчик
+# Создание или обновление счётчика
 Counter.update(
     session=session,
     cluster_uuid=cluster_id,
@@ -426,18 +428,18 @@ Counter.update(
 # Получение счётчика по имени
 counter = Counter.info(session=session, cluster_uuid=cluster_id, counter_name="test")
 
-# Очистить счётчик
+# Очищение счётчика
 Counter.clear(session=session, cluster_uuid=cluster_id, counter_name="test")
 
-# Получить текущие значения счётчика
+# Получение текущих значений счётчика
 values = Counter.values(session=session, cluster_uuid=cluster_id, counter_name="test")
 
-# Получить накопленные значения счётчика
+# Получение накопленных значений счётчика
 accumulated_values = Counter.accumulated_values(
     session=session, cluster_uuid=cluster_id, counter_name="test"
 )
 
-# Удалить счётчик
+# Удаление счётчика
 Counter.remove(session=session, cluster_uuid=cluster_id, counter_name="test")
 ```
 
@@ -484,7 +486,7 @@ cluster_id = Cluster.firstid(session=session)
 server_id = Server.firstid(session=session, cluster_uuid=cluster_id)
 
 # Создание требования и возврат его UUID
-rule_id = Rule.insert(
+rule_id = Rule.create(
     session=session, cluster_uuid=cluster_id, server_uuid=server_id, position=0
 )
 
