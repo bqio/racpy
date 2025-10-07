@@ -12,6 +12,7 @@ from .cmd.service import Service
 from .cmd.lock import Lock
 from .cmd.limit import Limit
 from .cmd.counter import Counter
+from .cmd.rule import Rule
 
 __all__ = [
     "Client",
@@ -30,4 +31,5 @@ __all__ = [
     "Lock",
     "Limit",
     "Counter",
+    "Rule",
 ]

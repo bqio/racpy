@@ -10,7 +10,6 @@ pip install git+https://github.com/bqio/racpy.git
 
 ## TODO
 
-- rule module
 - profile module
 
 ## Сущности
@@ -456,7 +455,7 @@ cluster_id = Cluster.firstid(session=session)
 # Получение списка ограничений
 limits = Limit.list(session=session, cluster_uuid=cluster_id)
 
-# Создать или обновить ограничение
+# Создание или обновление ограничения
 Limit.update(
     session=session,
     cluster_uuid=cluster_id,
@@ -468,6 +467,50 @@ Limit.update(
 # Получение ограничения по имени
 limit = Limit.info(session=session, cluster_uuid=cluster_id, limit_name="test")
 
-# Удалить ограничения
+# Удаление ограничения
 Limit.remove(session=session, cluster_uuid=cluster_id, limit_name="test")
+```
+
+### Требования назначения функциональности
+Данный класс предоставляет статические методы для взаимодействия с сервером администрирования в режиме управления требованиями назначения функциональности.
+
+```python
+from racpy import Client, Session, Cluster, Server, Rule
+
+...
+
+# Получение необходимых UUID
+cluster_id = Cluster.firstid(session=session)
+server_id = Server.firstid(session=session, cluster_uuid=cluster_id)
+
+# Создание требования и возврат его UUID
+rule_id = Rule.insert(
+    session=session, cluster_uuid=cluster_id, server_uuid=server_id, position=0
+)
+
+# Обновление требования
+Rule.update(
+    session=session,
+    cluster_uuid=cluster_id,
+    server_uuid=server_id,
+    rule_uuid=rule_id,
+    position=0,
+    priority=1,
+)
+
+# Получение списка требований
+Rule.list(session=session, cluster_uuid=cluster_id, server_uuid=server_id)
+
+# Получение требования по UUID
+Rule.info(
+    session=session,
+    cluster_uuid=cluster_id,
+    server_uuid=server_id,
+    rule_uuid=rule_id,
+)
+
+# Удаление требования
+Rule.remove(
+    session=session, cluster_uuid=cluster_id, server_uuid=server_id, rule_uuid=rule_id
+)
 ```

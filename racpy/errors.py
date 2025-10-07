@@ -144,7 +144,16 @@ class LimitNotFoundError(Exception):
         super().__init__("Ограничение ресурсов с указанным идентификатором не найдено")
 
 
+class RuleNotFoundError(Exception):
+    def __init__(self, stderr: str):
+        super().__init__("Требование размещения с указанным идентификатором не найдено")
+
+
 errors = [
+    (
+        r"Требование размещения с указанным идентификатором не найдено",
+        RuleNotFoundError,
+    ),
     (
         r"Ограничение ресурсов с указанным идентификатором не найдено",
         LimitNotFoundError,
