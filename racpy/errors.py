@@ -122,6 +122,11 @@ class ServerIsMainError(Exception):
         super().__init__("Рабочий сервер является центральным. Удаление невозможно")
 
 
+class IncorrectVersionError(Exception):
+    def __init__(self, stderr: str):
+        super().__init__(stderr.split("\n")[1].strip())
+
+
 class ParamError(Exception):
     def __init__(self, stderr: str):
         super().__init__(stderr.split("\n")[0])
@@ -155,6 +160,10 @@ class RuleNotFoundError(Exception):
 
 
 errors = [
+    (
+        r"Различаются версии клиента и сервера",
+        IncorrectVersionError,
+    ),
     (
         r"Требование размещения с указанным идентификатором не найдено",
         RuleNotFoundError,
