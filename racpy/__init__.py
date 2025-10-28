@@ -22,6 +22,7 @@ from .cmd.profile import (
     ProfileACLInet,
     ProfileACLModule,
 )
+from . import errors
 
 __all__ = [
     "Client",
@@ -48,4 +49,5 @@ __all__ = [
     "ProfileACLDirectory",
     "ProfileACLInet",
     "ProfileACLModule",
+    "errors",
 ]
