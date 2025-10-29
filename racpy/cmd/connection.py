@@ -1,19 +1,20 @@
 from .command import Command, Arg
-from ..types import EntryUUID, Entry, ListOfEntry
 from ..session import Session
 from ..handlers import to_list, to_dict
+from ..utils import list_to_dc, to_dc
+from ..schemas import ConnectionSchema, ConnectionShortSchema
 
 
 class Connection:
     @staticmethod
     def info(
         session: Session,
-        cluster_uuid: EntryUUID,
-        connection_uuid: EntryUUID,
+        cluster_uuid: str,
+        connection_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> Entry:
-        return session.exec(
+    ) -> ConnectionShortSchema:
+        connection = session.exec(
             Command(
                 Arg("connection"),
                 Arg("info"),
@@ -24,18 +25,19 @@ class Connection:
             ),
             to_dict,
         )
+        return to_dc(connection, ConnectionShortSchema)
 
     @staticmethod
     def list(
         session: Session,
-        cluster_uuid: EntryUUID,
-        process_uuid: EntryUUID,
-        infobase_uuid: EntryUUID,
+        cluster_uuid: str,
+        process_uuid: str,
+        infobase_uuid: str,
         infobase_user: str | None = None,
         infobase_pwd: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> ListOfEntry:
+    ) -> list[ConnectionSchema]:
         connections = session.exec(
             Command(
                 Arg("connection"),
@@ -52,19 +54,19 @@ class Connection:
         )
         if connections is None or len(connections) == 0:
             return []
-        return connections
+        return list_to_dc(connections, ConnectionSchema)
 
     @staticmethod
     def first(
         session: Session,
-        cluster_uuid: EntryUUID,
-        process_uuid: EntryUUID,
-        infobase_uuid: EntryUUID,
+        cluster_uuid: str,
+        process_uuid: str,
+        infobase_uuid: str,
         infobase_user: str | None = None,
         infobase_pwd: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> Entry | None:
+    ) -> ConnectionSchema | None:
         connections = Connection.list(
             session,
             cluster_uuid,
@@ -82,14 +84,14 @@ class Connection:
     @staticmethod
     def firstid(
         session: Session,
-        cluster_uuid: EntryUUID,
-        process_uuid: EntryUUID,
-        infobase_uuid: EntryUUID,
+        cluster_uuid: str,
+        process_uuid: str,
+        infobase_uuid: str,
         infobase_user: str | None = None,
         infobase_pwd: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> EntryUUID | None:
+    ) -> str | None:
         connection = Connection.first(
             session,
             cluster_uuid,
@@ -101,15 +103,15 @@ class Connection:
             cluster_pwd,
         )
         if connection:
-            return connection["connection"]
+            return connection.connection
         return None
 
     @staticmethod
     def kill(
         session: Session,
-        cluster_uuid: EntryUUID,
-        process_uuid: EntryUUID,
-        connection_uuid: EntryUUID,
+        cluster_uuid: str,
+        process_uuid: str,
+        connection_uuid: str,
         infobase_user: str | None = None,
         infobase_pwd: str | None = None,
         cluster_user: str | None = None,

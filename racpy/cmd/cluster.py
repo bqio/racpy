@@ -1,8 +1,8 @@
 from .command import Command, Arg
 from ..session import Session
-from ..types import Entry, EntryUUID, ListOfEntry
 from ..handlers import to_list, to_dict
-from ..utils import b2yn
+from ..utils import b2yn, list_to_dc, to_dc
+from ..schemas import ClusterSchema, ClusterAdminSchema
 
 
 class Cluster:
@@ -24,7 +24,7 @@ class Cluster:
         errors_count_threshold: int | None = None,
         agent_user: str | None = None,
         agent_pwd: str | None = None,
-    ) -> EntryUUID:
+    ) -> str:
         return session.exec(
             Command(
                 Arg("cluster"),
@@ -53,7 +53,7 @@ class Cluster:
     @staticmethod
     def update(
         session: Session,
-        cluster_uuid: EntryUUID,
+        cluster_uuid: str,
         name: str | None = None,
         load_balancing_mode: str | None = None,
         kill_problem_processes: bool | None = None,
@@ -95,7 +95,7 @@ class Cluster:
     @staticmethod
     def remove(
         session: Session,
-        cluster_uuid: EntryUUID,
+        cluster_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
     ) -> None:
@@ -110,7 +110,7 @@ class Cluster:
         )
 
     @staticmethod
-    def list(session: Session) -> ListOfEntry:
+    def list(session: Session) -> list[ClusterSchema]:
         clusters = session.exec(
             Command(
                 Arg("cluster"),
@@ -120,25 +120,25 @@ class Cluster:
         )
         if clusters is None or len(clusters) == 0:
             return []
-        return clusters
+        return list_to_dc(clusters, ClusterSchema)
 
     @staticmethod
-    def first(session: Session) -> Entry | None:
+    def first(session: Session) -> ClusterSchema | None:
         clusters = Cluster.list(session)
         if len(clusters) == 0:
             return None
         return clusters[0]
 
     @staticmethod
-    def firstid(session: Session) -> EntryUUID | None:
+    def firstid(session: Session) -> str | None:
         cluster = Cluster.first(session)
         if cluster:
-            return cluster["cluster"]
+            return cluster.cluster
         return None
 
     @staticmethod
-    def info(session: Session, cluster_uuid: EntryUUID) -> Entry:
-        return session.exec(
+    def info(session: Session, cluster_uuid: str) -> ClusterSchema:
+        cluster = session.exec(
             Command(
                 Arg("cluster"),
                 Arg("info"),
@@ -146,16 +146,17 @@ class Cluster:
             ),
             to_dict,
         )
+        return to_dc(cluster, ClusterSchema)
 
 
 class ClusterAdmin:
     @staticmethod
     def list(
         session: Session,
-        cluster_uuid: EntryUUID,
+        cluster_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> ListOfEntry:
+    ) -> list[ClusterAdminSchema]:
         admins = session.exec(
             Command(
                 Arg("cluster"),
@@ -169,15 +170,15 @@ class ClusterAdmin:
         )
         if admins is None or len(admins) == 0:
             return []
-        return admins
+        return list_to_dc(admins, ClusterAdminSchema)
 
     @staticmethod
     def first(
         session: Session,
-        cluster_uuid: EntryUUID,
+        cluster_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> Entry | None:
+    ) -> ClusterAdminSchema | None:
         admins = ClusterAdmin.list(session, cluster_uuid, cluster_user, cluster_pwd)
         if len(admins) == 0:
             return None
@@ -186,7 +187,7 @@ class ClusterAdmin:
     @staticmethod
     def create(
         session: Session,
-        cluster_uuid: EntryUUID,
+        cluster_uuid: str,
         admin_name: str | None = None,
         auth_type: str = "pwd",
         pwd: str | None = None,
@@ -218,7 +219,7 @@ class ClusterAdmin:
     @staticmethod
     def remove(
         session: Session,
-        cluster_uuid: EntryUUID,
+        cluster_uuid: str,
         admin_name: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,

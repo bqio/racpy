@@ -1,3 +1,8 @@
+from typing import Type, TypeVar
+
+T = TypeVar("T")
+
+
 def get_array_chunks(arr: list[tuple], n: int) -> list[list]:
     return [arr[i : i + n] for i in range(0, len(arr), n)]
 
@@ -24,3 +29,11 @@ def b2da(b: bool) -> str:
 
 def b2ana(b: bool) -> str:
     return "analyze" if b else "not-analyze"
+
+
+def to_dc(entry: dict, dc: Type[T]) -> T:
+    return dc(**entry)
+
+
+def list_to_dc(entry_list: list[dict], dc: Type[T]) -> list[T]:
+    return [dc(**entry) for entry in entry_list]

@@ -1,7 +1,8 @@
 from .command import Command, Arg
 from ..session import Session
-from ..types import ListOfEntry, Entry
 from ..handlers import to_str, to_list
+from ..utils import list_to_dc
+from ..schemas import AgentAdminSchema
 
 
 class Agent:
@@ -20,7 +21,7 @@ class AgentAdmin:
     @staticmethod
     def list(
         session: Session, agent_user: str | None = None, agent_pwd: str | None = None
-    ) -> ListOfEntry:
+    ) -> list[AgentAdminSchema]:
         admins = session.exec(
             Command(
                 Arg("agent"),
@@ -33,12 +34,12 @@ class AgentAdmin:
         )
         if admins is None or len(admins) == 0:
             return []
-        return admins
+        return list_to_dc(admins, AgentAdminSchema)
 
     @staticmethod
     def first(
         session: Session, agent_user: str | None = None, agent_pwd: str | None = None
-    ) -> Entry | None:
+    ) -> AgentAdminSchema | None:
         admins = AgentAdmin.list(session, agent_user, agent_pwd)
         if len(admins) == 0:
             return None

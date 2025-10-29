@@ -1,15 +1,16 @@
 from .command import Command, Arg
 from ..session import Session
-from ..types import EntryUUID, Entry, ListOfEntry
 from ..handlers import to_list, to_dict
+from ..utils import list_to_dc, to_dc
+from ..schemas import ServerSchema
 
 
 class Server:
     @staticmethod
     def update(
         session: Session,
-        cluster_uuid: EntryUUID,
-        server_uuid: EntryUUID,
+        cluster_uuid: str,
+        server_uuid: str,
         using: str | None = None,
         dedicate_managers: str | None = None,
         port_range: str | None = None,
@@ -69,8 +70,8 @@ class Server:
     @staticmethod
     def remove(
         session: Session,
-        cluster_uuid: EntryUUID,
-        server_uuid: EntryUUID,
+        cluster_uuid: str,
+        server_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
     ) -> None:
@@ -88,7 +89,7 @@ class Server:
     @staticmethod
     def create(
         session: Session,
-        cluster_uuid: EntryUUID,
+        cluster_uuid: str,
         agent_host: str,
         agent_port: int,
         port_range: str,
@@ -108,7 +109,7 @@ class Server:
         speech_to_text_model_directory: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> EntryUUID:
+    ) -> str:
         return session.exec(
             Command(
                 Arg("server"),
@@ -152,10 +153,10 @@ class Server:
     @staticmethod
     def list(
         session: Session,
-        cluster_uuid: EntryUUID,
+        cluster_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> ListOfEntry:
+    ) -> list[ServerSchema]:
         servers = session.exec(
             Command(
                 Arg("server"),
@@ -168,15 +169,15 @@ class Server:
         )
         if servers is None or len(servers) == 0:
             return []
-        return servers
+        return list_to_dc(servers, ServerSchema)
 
     @staticmethod
     def first(
         session: Session,
-        cluster_uuid: EntryUUID,
+        cluster_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> Entry | None:
+    ) -> ServerSchema | None:
         servers = Server.list(session, cluster_uuid, cluster_user, cluster_pwd)
         if len(servers) == 0:
             return None
@@ -185,24 +186,24 @@ class Server:
     @staticmethod
     def firstid(
         session: Session,
-        cluster_uuid: EntryUUID,
+        cluster_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> EntryUUID | None:
+    ) -> str | None:
         server = Server.first(session, cluster_uuid, cluster_user, cluster_pwd)
         if server:
-            return server["server"]
+            return server.server
         return None
 
     @staticmethod
     def info(
         session: Session,
-        cluster_uuid: EntryUUID,
-        server_uuid: EntryUUID,
+        cluster_uuid: str,
+        server_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> Entry:
-        return session.exec(
+    ) -> ServerSchema:
+        server = session.exec(
             Command(
                 Arg("server"),
                 Arg("info"),
@@ -213,3 +214,4 @@ class Server:
             ),
             to_dict,
         )
+        return to_dc(server, ServerSchema)
