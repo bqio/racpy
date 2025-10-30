@@ -194,3 +194,172 @@ class ConnectionSchema:
     duration_last_5min_service: int
     duration_all_service: int
     current_service_name: str
+
+
+@dataclass
+class CounterSchema:
+    name: str
+    collection_time: str
+    group: str
+    filter_type: str
+    filter: str
+    duration: str
+    cpu_time: str
+    memory: str
+    read: str
+    write: str
+    duration_dbms: str
+    dbms_bytes: str
+    service: str
+    call: str
+    number_of_active_sessions: str
+    number_of_sessions: str
+    descr: str
+
+
+@dataclass
+class CounterValuesSchema:
+    object: str
+    collection_time: str
+    duration: str
+    cpu_time: str
+    memory: str
+    read: str
+    write: str
+    duration_dbms: str
+    dbms_bytes: str
+    service: str
+    call: str
+    number_of_active_sessions: str
+    number_of_sessions: str
+    time: str
+
+
+@dataclass
+class LimitSchema:
+    name: str
+    counter: str
+    action: str
+    duration: str
+    cpu_time: str
+    memory: str
+    read: str
+    write: str
+    duration_dbms: str
+    dbms_bytes: str
+    service: str
+    call: str
+    number_of_active_sessions: str
+    number_of_sessions: str
+    error_message: str
+    descr: str
+
+
+@dataclass
+class ManagerSchema:
+    manager: str
+    pid: int
+    using: str
+    host: str
+    port: int
+    descr: str
+
+
+@dataclass
+class ServiceSchema:
+    name: str
+    main_only: int
+    manager: str
+    descr: str
+
+
+@dataclass
+class UserSessionSchema:
+    session: str
+    session_id: int
+    infobase: str
+    connection: str
+    process: str
+    user_name: str
+    host: str
+    app_id: str
+    locale: str
+    started_at: str
+    last_active_at: str
+    hibernate: str
+    passive_session_hibernate_time: int
+    hibernate_session_terminate_time: int
+    blocked_by_dbms: int
+    blocked_by_ls: int
+    bytes_all: int
+    bytes_last_5min: int
+    calls_all: int
+    calls_last_5min: int
+    dbms_bytes_all: int
+    dbms_bytes_last_5min: int
+    db_proc_info: str
+    db_proc_took: int
+    db_proc_took_at: str
+    duration_all: int
+    duration_all_dbms: int
+    duration_current: int
+    duration_current_dbms: int
+    duration_last_5min: int
+    duration_last_5min_dbms: int
+    memory_current: int
+    memory_last_5min: int
+    memory_total: int
+    read_current: int
+    read_last_5min: int
+    read_total: int
+    write_current: int
+    write_last_5min: int
+    write_total: int
+    duration_current_service: int
+    duration_last_5min_service: int
+    duration_all_service: int
+    current_service_name: str
+    cpu_time_current: int
+    cpu_time_last_5min: int
+    cpu_time_total: int
+    data_separation: str
+    client_ip: str
+
+
+@dataclass
+class UserSessionWithLicensesSchema:
+    session: str
+    user_name: str
+    host: str
+    app_id: str
+    full_name: str
+    series: str
+    issued_by_server: str
+    license_type: str
+    net: str
+    max_users_all: int
+    max_users_cur: int
+    rmngr_address: str
+    rmngr_port: int
+    rmngr_pid: int
+    short_presentation: str
+    full_presentation: str
+
+
+@dataclass
+class LockSchema:
+    connection: str
+    session: str
+    object: str
+    locked: str
+    descr: str
+
+
+@dataclass
+class RuleSchema:
+    rule: str
+    object_type: str
+    infobase_name: str
+    rule_type: str
+    application_ext: str
+    priority: int

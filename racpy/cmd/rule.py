@@ -1,14 +1,16 @@
+from typing import List
 from .command import Command, Arg, Flag
 from ..session import Session
-from ..types import Entry, ListOfEntry, EntryUUID
 from ..handlers import to_list, to_dict
+from ..utils import list_to_dc, to_dc
+from ..schemas import RuleSchema
 
 
 class Rule:
     @staticmethod
     def apply(
         session: Session,
-        cluster_uuid: EntryUUID,
+        cluster_uuid: str,
         partial: bool = False,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
@@ -27,12 +29,12 @@ class Rule:
     @staticmethod
     def info(
         session: Session,
-        cluster_uuid: EntryUUID,
-        server_uuid: EntryUUID,
-        rule_uuid: EntryUUID,
+        cluster_uuid: str,
+        server_uuid: str,
+        rule_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> Entry:
+    ) -> RuleSchema:
         rule = session.exec(
             Command(
                 Arg("rule"),
@@ -45,16 +47,16 @@ class Rule:
             ),
             to_dict,
         )
-        return rule
+        return to_dc(rule, RuleSchema)
 
     @staticmethod
     def list(
         session: Session,
-        cluster_uuid: EntryUUID,
-        server_uuid: EntryUUID,
+        cluster_uuid: str,
+        server_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> ListOfEntry:
+    ) -> List[RuleSchema]:
         rules = session.exec(
             Command(
                 Arg("rule"),
@@ -68,16 +70,16 @@ class Rule:
         )
         if rules is None or len(rules) == 0:
             return []
-        return rules
+        return list_to_dc(rules, RuleSchema)
 
     @staticmethod
     def first(
         session: Session,
-        cluster_uuid: EntryUUID,
-        server_uuid: EntryUUID,
+        cluster_uuid: str,
+        server_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> Entry | None:
+    ) -> RuleSchema | None:
         rules = Rule.list(session, cluster_uuid, server_uuid, cluster_user, cluster_pwd)
         if len(rules) == 0:
             return None
@@ -86,21 +88,21 @@ class Rule:
     @staticmethod
     def firstid(
         session: Session,
-        cluster_uuid: EntryUUID,
-        server_uuid: EntryUUID,
+        cluster_uuid: str,
+        server_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> EntryUUID | None:
+    ) -> str | None:
         rule = Rule.first(session, cluster_uuid, server_uuid, cluster_user, cluster_pwd)
         if rule:
-            return rule["rule"]
+            return rule.rule
         return None
 
     @staticmethod
     def create(
         session: Session,
-        cluster_uuid: EntryUUID,
-        server_uuid: EntryUUID,
+        cluster_uuid: str,
+        server_uuid: str,
         position: int,
         object_type: str | None = None,
         infobase_name: str | None = None,
@@ -109,7 +111,7 @@ class Rule:
         priority: int | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> EntryUUID:
+    ) -> str:
         rule = session.exec(
             Command(
                 Arg("rule"),
@@ -132,9 +134,9 @@ class Rule:
     @staticmethod
     def update(
         session: Session,
-        cluster_uuid: EntryUUID,
-        server_uuid: EntryUUID,
-        rule_uuid: EntryUUID,
+        cluster_uuid: str,
+        server_uuid: str,
+        rule_uuid: str,
         position: int,
         object_type: str | None = None,
         infobase_name: str | None = None,
@@ -165,9 +167,9 @@ class Rule:
     @staticmethod
     def remove(
         session: Session,
-        cluster_uuid: EntryUUID,
-        server_uuid: EntryUUID,
-        rule_uuid: EntryUUID,
+        cluster_uuid: str,
+        server_uuid: str,
+        rule_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
     ) -> None:

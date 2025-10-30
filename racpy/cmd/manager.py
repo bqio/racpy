@@ -1,19 +1,21 @@
+from typing import List
 from .command import Command, Arg
 from ..session import Session
-from ..types import EntryUUID, Entry, ListOfEntry
 from ..handlers import to_list, to_dict
+from ..utils import list_to_dc, to_dc
+from ..schemas import ManagerSchema
 
 
 class Manager:
     @staticmethod
     def info(
         session: Session,
-        cluster_uuid: EntryUUID,
-        manager_uuid: EntryUUID,
+        cluster_uuid: str,
+        manager_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> Entry:
-        return session.exec(
+    ) -> ManagerSchema:
+        manager = session.exec(
             Command(
                 Arg("manager"),
                 Arg("info"),
@@ -24,14 +26,15 @@ class Manager:
             ),
             to_dict,
         )
+        return to_dc(manager, ManagerSchema)
 
     @staticmethod
     def list(
         session: Session,
-        cluster_uuid: EntryUUID,
+        cluster_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> ListOfEntry:
+    ) -> List[ManagerSchema]:
         managers = session.exec(
             Command(
                 Arg("manager"),
@@ -44,15 +47,15 @@ class Manager:
         )
         if managers is None or len(managers) == 0:
             return []
-        return managers
+        return list_to_dc(managers, ManagerSchema)
 
     @staticmethod
     def first(
         session: Session,
-        cluster_uuid: EntryUUID,
+        cluster_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> Entry | None:
+    ) -> ManagerSchema | None:
         managers = Manager.list(
             session,
             cluster_uuid,
@@ -66,10 +69,10 @@ class Manager:
     @staticmethod
     def firstid(
         session: Session,
-        cluster_uuid: EntryUUID,
+        cluster_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> EntryUUID | None:
+    ) -> str | None:
         manager = Manager.first(
             session,
             cluster_uuid,
@@ -77,5 +80,5 @@ class Manager:
             cluster_pwd,
         )
         if manager:
-            return manager["manager"]
+            return manager.manager
         return None

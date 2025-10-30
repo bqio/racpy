@@ -1,17 +1,19 @@
+from typing import List
 from .command import Command, Arg
 from ..session import Session
-from ..types import Entry, ListOfEntry, EntryUUID
 from ..handlers import to_list, to_dict
+from ..utils import list_to_dc, to_dc
+from ..schemas import LimitSchema
 
 
 class Limit:
     @staticmethod
     def list(
         session: Session,
-        cluster_uuid: EntryUUID,
+        cluster_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> ListOfEntry:
+    ) -> List[LimitSchema]:
         limits = session.exec(
             Command(
                 Arg("limit"),
@@ -24,17 +26,17 @@ class Limit:
         )
         if limits is None or len(limits) == 0:
             return []
-        return limits
+        return list_to_dc(limits, LimitSchema)
 
     @staticmethod
     def info(
         session: Session,
-        cluster_uuid: EntryUUID,
+        cluster_uuid: str,
         limit_name: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> Entry:
-        return session.exec(
+    ) -> LimitSchema:
+        limit = session.exec(
             Command(
                 Arg("limit"),
                 Arg("info"),
@@ -45,11 +47,12 @@ class Limit:
             ),
             to_dict,
         )
+        return to_dc(limit, LimitSchema)
 
     @staticmethod
     def update(
         session: Session,
-        cluster_uuid: EntryUUID,
+        cluster_uuid: str,
         limit_name: str,
         action: str,
         counter_name: str,
@@ -98,7 +101,7 @@ class Limit:
     @staticmethod
     def remove(
         session: Session,
-        cluster_uuid: EntryUUID,
+        cluster_uuid: str,
         limit_name: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,

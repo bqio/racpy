@@ -14,6 +14,8 @@ pip install git+https://github.com/bqio/racpy.git
 
 ## Сущности
 
+[Возвращаемые схемы данных](https://github.com/bqio/racpy/blob/main/racpy/schemas.py)
+
 ### Клиент
 
 Клиент необходим, чтобы указать путь до утилиты RAC и создать сессию подключения. Можно создавать сразу несколько клиентов для взаимодействия с разными утилитами RAC.
@@ -111,7 +113,7 @@ from racpy import Client, Session, Cluster, ClusterAdmin
 
 ...
 
-# Получение UUID первого кластера (.firstid() эквивалентен Cluster.first()["cluster"])
+# Получение UUID первого кластера (.firstid() эквивалентен Cluster.first().cluster)
 cluster_id = Cluster.firstid(session=session)
 
 # Получение списка администраторов кластера
@@ -140,7 +142,7 @@ from racpy import Client, Session, Cluster, Infobase
 ...
 
 # Получение UUID первого кластера (.first() эквивалентен Cluster.list()[0])
-cluster_id = Cluster.first(session=session)["cluster"]
+cluster_id = Cluster.first(session=session).cluster
 
 # Получение списка информационных баз
 infobases = Infobase.list(session=session, cluster_uuid=cluster_id)
@@ -190,7 +192,7 @@ from racpy import Client, Session, Cluster, Server
 
 ...
 
-# Получение UUID первого кластера (.firstid() эквивалентен Cluster.first()["cluster"])
+# Получение UUID первого кластера
 cluster_id = Cluster.firstid(session=session)
 
 # Получение списока рабочих серверов кластера
@@ -273,7 +275,7 @@ connections = Connection.list(
 )
 
 # Получение информации соединения
-connection_id = connections[0]["connection"]
+connection_id = connections[0].connection
 connection_info = Connection.info(
     session=session, cluster_uuid=cluster_id, connection_uuid=connection_id
 )
@@ -306,7 +308,7 @@ active_user_sessions = UserSession.list(
 )
 
 # Получение полной информации сеанса с указанием лицензий
-user_session_id = active_user_sessions[0]["session"]
+user_session_id = active_user_sessions[0].session
 user_session_info = UserSession.info(
     session=session,
     cluster_uuid=cluster_id,
@@ -339,7 +341,7 @@ cluster_id = Cluster.firstid(session=session)
 managers = Manager.list(session=session, cluster_uuid=cluster_id)
 
 # Получение информации о менеджере по его UUID
-manager_id = managers[0]["manager"]
+manager_id = managers[0].manager
 manager_info = Manager.info(
     session=session, cluster_uuid=cluster_id, manager_uuid=manager_id
 )

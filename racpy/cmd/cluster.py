@@ -1,3 +1,4 @@
+from typing import List
 from .command import Command, Arg
 from ..session import Session
 from ..handlers import to_list, to_dict
@@ -110,7 +111,7 @@ class Cluster:
         )
 
     @staticmethod
-    def list(session: Session) -> list[ClusterSchema]:
+    def list(session: Session) -> List[ClusterSchema]:
         clusters = session.exec(
             Command(
                 Arg("cluster"),
@@ -156,7 +157,7 @@ class ClusterAdmin:
         cluster_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> list[ClusterAdminSchema]:
+    ) -> List[ClusterAdminSchema]:
         admins = session.exec(
             Command(
                 Arg("cluster"),

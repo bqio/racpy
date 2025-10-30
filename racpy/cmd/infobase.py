@@ -1,3 +1,4 @@
+from typing import List
 from .command import Command, Arg, Flag
 from ..session import Session
 from ..handlers import to_dict, to_list
@@ -184,7 +185,7 @@ class Infobase:
         cluster_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> list[InfobaseShortSchema]:
+    ) -> List[InfobaseShortSchema]:
         infobases = session.exec(
             Command(
                 Arg("infobase"),

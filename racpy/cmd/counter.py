@@ -1,18 +1,19 @@
+from typing import List
 from .command import Command, Arg
-from ..types import Entry, ListOfEntry, EntryUUID
 from ..session import Session
 from ..handlers import to_list, to_dict
-from ..utils import b2ana
+from ..utils import b2ana, to_dc, list_to_dc
+from ..schemas import CounterSchema, CounterValuesSchema
 
 
 class Counter:
     @staticmethod
     def list(
         session: Session,
-        cluster_uuid: EntryUUID,
+        cluster_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> ListOfEntry:
+    ) -> List[CounterSchema]:
         counters = session.exec(
             Command(
                 Arg("counter"),
@@ -25,17 +26,17 @@ class Counter:
         )
         if counters is None or len(counters) == 0:
             return []
-        return counters
+        return list_to_dc(counters, CounterSchema)
 
     @staticmethod
     def info(
         session: Session,
-        cluster_uuid: EntryUUID,
+        cluster_uuid: str,
         counter_name: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> Entry:
-        return session.exec(
+    ) -> CounterSchema:
+        counter = session.exec(
             Command(
                 Arg("counter"),
                 Arg("info"),
@@ -46,11 +47,12 @@ class Counter:
             ),
             to_dict,
         )
+        return to_dc(counter, CounterSchema)
 
     @staticmethod
     def update(
         session: Session,
-        cluster_uuid: EntryUUID,
+        cluster_uuid: str,
         counter_name: str,
         collection_time: str,
         group: str,
@@ -101,12 +103,12 @@ class Counter:
     @staticmethod
     def values(
         session: Session,
-        cluster_uuid: EntryUUID,
+        cluster_uuid: str,
         counter_name: str,
         counter_object: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> ListOfEntry:
+    ) -> List[CounterValuesSchema]:
         values = session.exec(
             Command(
                 Arg("counter"),
@@ -121,12 +123,12 @@ class Counter:
         )
         if values is None or len(values) == 0:
             return []
-        return values
+        return list_to_dc(values, CounterValuesSchema)
 
     @staticmethod
     def remove(
         session: Session,
-        cluster_uuid: EntryUUID,
+        cluster_uuid: str,
         counter_name: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
@@ -145,7 +147,7 @@ class Counter:
     @staticmethod
     def clear(
         session: Session,
-        cluster_uuid: EntryUUID,
+        cluster_uuid: str,
         counter_name: str,
         counter_object: str | None = None,
         cluster_user: str | None = None,
@@ -166,12 +168,12 @@ class Counter:
     @staticmethod
     def accumulated_values(
         session: Session,
-        cluster_uuid: EntryUUID,
+        cluster_uuid: str,
         counter_name: str,
         counter_object: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> ListOfEntry:
+    ) -> List[CounterValuesSchema]:
         values = session.exec(
             Command(
                 Arg("counter"),
@@ -186,4 +188,4 @@ class Counter:
         )
         if values is None or len(values) == 0:
             return []
-        return values
+        return list_to_dc(values, CounterValuesSchema)

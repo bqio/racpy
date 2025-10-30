@@ -1,3 +1,4 @@
+from typing import List
 from .command import Command, Arg
 from ..session import Session
 from ..handlers import to_list, to_dict
@@ -37,7 +38,7 @@ class Connection:
         infobase_pwd: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> list[ConnectionSchema]:
+    ) -> List[ConnectionSchema]:
         connections = session.exec(
             Command(
                 Arg("connection"),
@@ -79,7 +80,7 @@ class Connection:
         )
         if len(connections) == 0:
             return None
-        return connections
+        return connections[0]
 
     @staticmethod
     def firstid(

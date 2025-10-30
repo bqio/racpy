@@ -1,3 +1,4 @@
+from typing import List
 from .command import Command, Arg
 from ..session import Session
 from ..handlers import to_str, to_list
@@ -21,7 +22,7 @@ class AgentAdmin:
     @staticmethod
     def list(
         session: Session, agent_user: str | None = None, agent_pwd: str | None = None
-    ) -> list[AgentAdminSchema]:
+    ) -> List[AgentAdminSchema]:
         admins = session.exec(
             Command(
                 Arg("agent"),

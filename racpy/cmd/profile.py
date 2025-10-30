@@ -1,6 +1,6 @@
+from typing import List
 from .command import Command, Arg, Flag
 from ..session import Session
-from ..types import Entry, ListOfEntry, EntryUUID
 from ..handlers import to_list, to_dict
 
 
@@ -11,7 +11,7 @@ class Profile:
         cluster_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> ListOfEntry:
+    ) -> list[dict]:
         profiles = session.exec(
             Command(
                 Arg("profile"),
@@ -44,7 +44,7 @@ class Profile:
         modules_not_available_for_extension: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> Entry:
+    ) -> dict:
         pass
 
     @staticmethod

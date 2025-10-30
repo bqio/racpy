@@ -1,3 +1,4 @@
+from typing import List
 from .command import Command, Arg, Flag
 from ..session import Session
 from ..handlers import to_list, to_dict
@@ -39,7 +40,7 @@ class Process:
         licenses: bool = False,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> list[ProcessSchema | ProcessWithLicensesSchema]:
+    ) -> List[ProcessSchema | ProcessWithLicensesSchema]:
         processes = session.exec(
             Command(
                 Arg("process"),

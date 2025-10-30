@@ -1,20 +1,22 @@
+from typing import List
 from .command import Command, Arg
 from ..session import Session
-from ..types import EntryUUID, Entry, ListOfEntry
 from ..handlers import to_list
+from ..utils import list_to_dc
+from ..schemas import LockSchema
 
 
 class Lock:
     @staticmethod
     def list(
         session: Session,
-        cluster_uuid: EntryUUID,
-        infobase_uuid: EntryUUID,
-        connection_uuid: EntryUUID,
-        user_session_uuid: EntryUUID,
+        cluster_uuid: str,
+        infobase_uuid: str,
+        connection_uuid: str,
+        user_session_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> ListOfEntry:
+    ) -> List[LockSchema]:
         locks = session.exec(
             Command(
                 Arg("lock"),
@@ -30,18 +32,18 @@ class Lock:
         )
         if locks is None or len(locks) == 0:
             return []
-        return locks
+        return list_to_dc(locks, LockSchema)
 
     @staticmethod
     def first(
         session: Session,
-        cluster_uuid: EntryUUID,
-        infobase_uuid: EntryUUID,
-        connection_uuid: EntryUUID,
-        user_session_uuid: EntryUUID,
+        cluster_uuid: str,
+        infobase_uuid: str,
+        connection_uuid: str,
+        user_session_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> Entry | None:
+    ) -> LockSchema | None:
         locks = Lock.list(
             session,
             cluster_uuid,

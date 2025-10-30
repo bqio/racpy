@@ -1,3 +1,4 @@
+from typing import List
 from .command import Command, Arg
 from ..session import Session
 from ..handlers import to_list, to_dict
@@ -156,7 +157,7 @@ class Server:
         cluster_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> list[ServerSchema]:
+    ) -> List[ServerSchema]:
         servers = session.exec(
             Command(
                 Arg("server"),

@@ -1,17 +1,19 @@
+from typing import List
 from .command import Command, Arg
 from ..session import Session
-from ..types import Entry, EntryUUID, ListOfEntry
 from ..handlers import to_list
+from ..utils import list_to_dc, to_dc
+from ..schemas import ServiceSchema
 
 
 class Service:
     @staticmethod
     def list(
         session: Session,
-        cluster_uuid: EntryUUID,
+        cluster_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> ListOfEntry:
+    ) -> List[ServiceSchema]:
         services = session.exec(
             Command(
                 Arg("service"),
@@ -24,7 +26,7 @@ class Service:
         )
         if services is None or len(services) == 0:
             return []
-        return services
+        return list_to_dc(services, ServiceSchema)
 
     @staticmethod
     def first(
@@ -32,7 +34,7 @@ class Service:
         cluster_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> Entry | None:
+    ) -> ServiceSchema | None:
         services = Service.list(session, cluster_uuid, cluster_user, cluster_pwd)
         if len(services) == 0:
             return None
