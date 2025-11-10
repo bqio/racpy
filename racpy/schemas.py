@@ -363,3 +363,33 @@ class RuleSchema:
     rule_type: str
     application_ext: str
     priority: int
+
+
+@dataclass
+class ProfileSchema:
+    name: str
+    descr: str
+    config: str
+    priv: str
+    directory: str
+    com: str
+    addin: str
+    module: str
+    app: str
+    inet: str
+    crypto: str
+    right_extension: str
+    right_extension_definition_roles: str
+    all_modules_extension: str
+    modules_available_for_extension: str
+    modules_not_available_for_extension: str
+    privileged_mode_roles: str
+
+
+@dataclass
+class ProfileACRDirectorySchema:
+    alias: str
+    descr: str
+    physicalPath: str
+    allowedRead: str
+    allowedWrite: str

@@ -1,7 +1,9 @@
 from typing import List
 from .command import Command, Arg, Flag
 from ..session import Session
-from ..handlers import to_list, to_dict
+from ..handlers import to_list, to_dict, to_str
+from ..utils import list_to_dc, to_dc, b2yn
+from ..schemas import ProfileSchema, ProfileACRDirectorySchema
 
 
 class Profile:
@@ -11,7 +13,7 @@ class Profile:
         cluster_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> list[dict]:
+    ) -> List[ProfileSchema]:
         profiles = session.exec(
             Command(
                 Arg("profile"),
@@ -24,7 +26,7 @@ class Profile:
         )
         if profiles is None or len(profiles) == 0:
             return []
-        return profiles
+        return list_to_dc(profiles, ProfileSchema)
 
     @staticmethod
     def update(
@@ -44,8 +46,37 @@ class Profile:
         modules_not_available_for_extension: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> dict:
-        pass
+    ) -> None:
+        return session.exec(
+            Command(
+                Arg("profile"),
+                Arg("update"),
+                Arg(cluster_uuid, "--cluster={}"),
+                Arg(profile_name, "--name={}"),
+                Arg(descr, "--descr={}"),
+                Arg(b2yn(config), "--config={}"),
+                Arg(b2yn(priv), "--priv={}"),
+                Arg(b2yn(full_privileged_mode), "--full-privileged-mode={}"),
+                Arg(privileged_mode_roles, "--privileged-mode-roles={}"),
+                Arg(b2yn(crypto), "--crypto={}"),
+                Arg(b2yn(right_extension), "--right-extension={}"),
+                Arg(
+                    right_extension_definition_roles,
+                    "--right-extension-definition-roles={}",
+                ),
+                Arg(b2yn(all_modules_extension), "--all-modules-extension={}"),
+                Arg(
+                    modules_available_for_extension,
+                    "--modules-available-for-extension={}",
+                ),
+                Arg(
+                    modules_not_available_for_extension,
+                    "--modules-not-available-for-extension={}",
+                ),
+                Arg(cluster_user, "--cluster-user={}"),
+                Arg(cluster_pwd, "--cluster-pwd={}"),
+            )
+        )
 
     @staticmethod
     def remove(
@@ -68,7 +99,57 @@ class Profile:
 
 
 class ProfileACLDirectory:
-    pass
+    @staticmethod
+    def list(
+        session: Session,
+        cluster_uuid: str,
+        profile_name: str,
+        access: str = "list",
+        cluster_user: str | None = None,
+        cluster_pwd: str | None = None,
+    ) -> List[ProfileACRDirectorySchema]:
+        dirs = session.exec(
+            Command(
+                Arg("profile"),
+                Arg("acl"),
+                Arg("directory"),
+                Arg("list"),
+                Arg(cluster_uuid, "--cluster={}"),
+                Arg(profile_name, "--name={}"),
+                Arg(access, "--access={}"),
+                Arg(cluster_user, "--cluster-user={}"),
+                Arg(cluster_pwd, "--cluster-pwd={}"),
+            ),
+            to_list,
+        )
+        if dirs is None or len(dirs) == 0:
+            return []
+        return list_to_dc(dirs, ProfileACRDirectorySchema)
+
+    @staticmethod
+    def remove(
+        session: Session,
+        cluster_uuid: str,
+        profile_name: str,
+        alias: str,
+        access: str = "list",
+        cluster_user: str | None = None,
+        cluster_pwd: str | None = None,
+    ) -> None:
+        return session.exec(
+            Command(
+                Arg("profile"),
+                Arg("acl"),
+                Arg("directory"),
+                Arg("remove"),
+                Arg(cluster_uuid, "--cluster={}"),
+                Arg(profile_name, "--name={}"),
+                Arg(alias, "--alias={}"),
+                Arg(access, "--access={}"),
+                Arg(cluster_user, "--cluster-user={}"),
+                Arg(cluster_pwd, "--cluster-pwd={}"),
+            )
+        )
 
 
 class ProfileACLCOM:
