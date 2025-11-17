@@ -36,7 +36,7 @@ class UserSession:
     def list(
         session: Session,
         cluster_uuid: str,
-        infobase_uuid: str,
+        infobase_uuid: str | None = None,
         licenses: bool = False,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
