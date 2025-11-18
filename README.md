@@ -5,7 +5,7 @@
 ## Установка
 
 ```bash
-pip install git+https://github.com/bqio/racpy.git
+pip install git+https://github.com/bqio/racpy.git@8.3.24.1667
 ```
 
 ## TODO
