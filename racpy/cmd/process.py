@@ -58,35 +58,3 @@ class Process:
         if licenses:
             return list_to_dc(processes, ProcessWithLicensesSchema)
         return list_to_dc(processes, ProcessSchema)
-
-    @staticmethod
-    def first(
-        session: Session,
-        cluster_uuid: str,
-        server_uuid: str,
-        licenses: bool = False,
-        cluster_user: str | None = None,
-        cluster_pwd: str | None = None,
-    ) -> ProcessSchema | ProcessWithLicensesSchema | None:
-        processes = Process.list(
-            session, cluster_uuid, server_uuid, licenses, cluster_user, cluster_pwd
-        )
-        if len(processes) == 0:
-            return None
-        return processes[0]
-
-    @staticmethod
-    def firstid(
-        session: Session,
-        cluster_uuid: str,
-        server_uuid: str,
-        licenses: bool = False,
-        cluster_user: str | None = None,
-        cluster_pwd: str | None = None,
-    ) -> str | None:
-        process = Process.first(
-            session, cluster_uuid, server_uuid, licenses, cluster_user, cluster_pwd
-        )
-        if process:
-            return process.process
-        return None

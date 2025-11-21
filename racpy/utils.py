@@ -16,22 +16,70 @@ def get_dict_entry_count(output_lines: list[str]) -> int:
 
 
 def b2yn(b: bool) -> str:
-    return "yes" if b else "no"
+    match b:
+        case True:
+            return "yes"
+        case False:
+            return "no"
+        case None:
+            return None
 
 
 def b2of(b: bool) -> str:
-    return "on" if b else "off"
+    match b:
+        case True:
+            return "on"
+        case False:
+            return "off"
+        case None:
+            return None
 
 
 def b2da(b: bool) -> str:
-    return "allow" if b else "deny"
+    match b:
+        case True:
+            return "allow"
+        case False:
+            return "deny"
+        case None:
+            return None
 
 
 def b2ana(b: bool) -> str:
-    return "analyze" if b else "not-analyze"
+    match b:
+        case True:
+            return "analyze"
+        case False:
+            return "not-analyze"
+        case None:
+            return None
+
+
+def any2b(an: str) -> bool | str:
+    match an:
+        case "yes":
+            return True
+        case "no":
+            return False
+        case "on":
+            return True
+        case "off":
+            return False
+        case "allow":
+            return True
+        case "deny":
+            return False
+        case "analyze":
+            return True
+        case "not-analyze":
+            return False
+        case _:
+            return an
 
 
 def to_dc(entry: dict, dc: Type[T]) -> T:
+    for key in entry:
+        entry[key] = any2b(entry[key])
     return dc(**entry)
 
 

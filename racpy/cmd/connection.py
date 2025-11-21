@@ -58,56 +58,6 @@ class Connection:
         return list_to_dc(connections, ConnectionSchema)
 
     @staticmethod
-    def first(
-        session: Session,
-        cluster_uuid: str,
-        process_uuid: str,
-        infobase_uuid: str,
-        infobase_user: str | None = None,
-        infobase_pwd: str | None = None,
-        cluster_user: str | None = None,
-        cluster_pwd: str | None = None,
-    ) -> ConnectionSchema | None:
-        connections = Connection.list(
-            session,
-            cluster_uuid,
-            process_uuid,
-            infobase_uuid,
-            infobase_user,
-            infobase_pwd,
-            cluster_user,
-            cluster_pwd,
-        )
-        if len(connections) == 0:
-            return None
-        return connections[0]
-
-    @staticmethod
-    def firstid(
-        session: Session,
-        cluster_uuid: str,
-        process_uuid: str,
-        infobase_uuid: str,
-        infobase_user: str | None = None,
-        infobase_pwd: str | None = None,
-        cluster_user: str | None = None,
-        cluster_pwd: str | None = None,
-    ) -> str | None:
-        connection = Connection.first(
-            session,
-            cluster_uuid,
-            process_uuid,
-            infobase_uuid,
-            infobase_user,
-            infobase_pwd,
-            cluster_user,
-            cluster_pwd,
-        )
-        if connection:
-            return connection.connection
-        return None
-
-    @staticmethod
     def kill(
         session: Session,
         cluster_uuid: str,

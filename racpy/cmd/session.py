@@ -60,38 +60,6 @@ class UserSession:
         return list_to_dc(sessions, UserSessionSchema)
 
     @staticmethod
-    def first(
-        session: Session,
-        cluster_uuid: str,
-        infobase_uuid: str,
-        licenses: bool = False,
-        cluster_user: str | None = None,
-        cluster_pwd: str | None = None,
-    ) -> UserSessionSchema | UserSessionWithLicensesSchema | None:
-        user_sessions = UserSession.list(
-            session, cluster_uuid, infobase_uuid, licenses, cluster_user, cluster_pwd
-        )
-        if len(user_sessions) == 0:
-            return None
-        return user_sessions[0]
-
-    @staticmethod
-    def firstid(
-        session: Session,
-        cluster_uuid: str,
-        infobase_uuid: str,
-        licenses: bool = False,
-        cluster_user: str | None = None,
-        cluster_pwd: str | None = None,
-    ) -> str | None:
-        user_session = UserSession.first(
-            session, cluster_uuid, infobase_uuid, licenses, cluster_user, cluster_pwd
-        )
-        if user_session:
-            return user_session.session
-        return None
-
-    @staticmethod
     def kill(
         session: Session,
         cluster_uuid: str,

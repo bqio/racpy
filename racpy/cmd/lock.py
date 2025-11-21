@@ -33,26 +33,3 @@ class Lock:
         if locks is None or len(locks) == 0:
             return []
         return list_to_dc(locks, LockSchema)
-
-    @staticmethod
-    def first(
-        session: Session,
-        cluster_uuid: str,
-        infobase_uuid: str,
-        connection_uuid: str,
-        user_session_uuid: str,
-        cluster_user: str | None = None,
-        cluster_pwd: str | None = None,
-    ) -> LockSchema | None:
-        locks = Lock.list(
-            session,
-            cluster_uuid,
-            infobase_uuid,
-            connection_uuid,
-            user_session_uuid,
-            cluster_user,
-            cluster_pwd,
-        )
-        if len(locks) == 0:
-            return None
-        return locks[0]

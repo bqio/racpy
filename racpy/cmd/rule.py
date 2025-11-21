@@ -73,32 +73,6 @@ class Rule:
         return list_to_dc(rules, RuleSchema)
 
     @staticmethod
-    def first(
-        session: Session,
-        cluster_uuid: str,
-        server_uuid: str,
-        cluster_user: str | None = None,
-        cluster_pwd: str | None = None,
-    ) -> RuleSchema | None:
-        rules = Rule.list(session, cluster_uuid, server_uuid, cluster_user, cluster_pwd)
-        if len(rules) == 0:
-            return None
-        return rules[0]
-
-    @staticmethod
-    def firstid(
-        session: Session,
-        cluster_uuid: str,
-        server_uuid: str,
-        cluster_user: str | None = None,
-        cluster_pwd: str | None = None,
-    ) -> str | None:
-        rule = Rule.first(session, cluster_uuid, server_uuid, cluster_user, cluster_pwd)
-        if rule:
-            return rule.rule
-        return None
-
-    @staticmethod
     def create(
         session: Session,
         cluster_uuid: str,

@@ -48,37 +48,3 @@ class Manager:
         if managers is None or len(managers) == 0:
             return []
         return list_to_dc(managers, ManagerSchema)
-
-    @staticmethod
-    def first(
-        session: Session,
-        cluster_uuid: str,
-        cluster_user: str | None = None,
-        cluster_pwd: str | None = None,
-    ) -> ManagerSchema | None:
-        managers = Manager.list(
-            session,
-            cluster_uuid,
-            cluster_user,
-            cluster_pwd,
-        )
-        if len(managers) == 0:
-            return None
-        return managers[0]
-
-    @staticmethod
-    def firstid(
-        session: Session,
-        cluster_uuid: str,
-        cluster_user: str | None = None,
-        cluster_pwd: str | None = None,
-    ) -> str | None:
-        manager = Manager.first(
-            session,
-            cluster_uuid,
-            cluster_user,
-            cluster_pwd,
-        )
-        if manager:
-            return manager.manager
-        return None

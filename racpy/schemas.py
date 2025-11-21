@@ -1,20 +1,38 @@
 from dataclasses import dataclass
+from .enums import AuthMethod, LoadBalancingMode, SecurityLevel
+
+
+@dataclass
+class PortRange:
+    """Диапазон портов."""
+
+    min: int
+    max: int
+
+    def __str__(self):
+        return f"{self.min}:{self.max}"
 
 
 @dataclass
 class AgentAdminSchema:
     name: str
-    auth: str
+    auth: AuthMethod
     os_user: str
     descr: str
+
+    def __post_init__(self):
+        self.auth = AuthMethod(self.auth)
 
 
 @dataclass
 class ClusterAdminSchema:
     name: str
-    auth: str
+    auth: AuthMethod
     os_user: str
     descr: str
+
+    def __post_init__(self):
+        self.auth = AuthMethod(self.auth)
 
 
 @dataclass
@@ -27,16 +45,16 @@ class ClusterSchema:
     lifetime_limit: int
     max_memory_size: int
     max_memory_time_limit: int
-    security_level: int
+    security_level: SecurityLevel
     session_fault_tolerance_level: int
-    load_balancing_mode: str
+    load_balancing_mode: LoadBalancingMode
     errors_count_threshold: int
-    kill_problem_processes: int
-    kill_by_memory_with_dump: int
-    allow_access_right_audit_events_recording: int
-    ping_period: int
-    ping_timeout: int
-    restart_schedule: str
+    kill_problem_processes: bool
+    kill_by_memory_with_dump: bool
+
+    def __post_init__(self):
+        self.security_level = SecurityLevel(self.security_level)
+        self.load_balancing_mode = LoadBalancingMode(self.load_balancing_mode)
 
 
 @dataclass
@@ -58,7 +76,7 @@ class ServerSchema:
     temporary_allowed_total_memory: int
     temporary_allowed_total_memory_time_limit: int
     service_principal_name: str
-    restart_schedule: str
+    speech_to_text_model_directory: str
 
 
 @dataclass
@@ -121,24 +139,21 @@ class InfobaseSchema:
     db_name: str
     db_user: str
     security_level: int
-    license_distribution: str
-    scheduled_jobs_deny: str
-    sessions_deny: str
+    license_distribution: bool
+    scheduled_jobs_deny: bool
+    sessions_deny: bool
     denied_from: str
     denied_message: str
     denied_parameter: str
     denied_to: str
     permission_code: str
     external_session_manager_connection_string: str
-    external_session_manager_required: str
+    external_session_manager_required: bool
     security_profile_name: str
     safe_mode_security_profile_name: str
-    reserve_working_processes: str
+    reserve_working_processes: bool
     descr: str
-    disable_local_speech_to_text: str
-    configuration_unload_delay_by_working_process_without_active_users: int
-    minimum_scheduled_jobs_start_period_without_active_users: int
-    maximum_scheduled_jobs_start_shift_without_active_users: int
+    disable_local_speech_to_text: bool
 
 
 @dataclass
@@ -387,7 +402,7 @@ class ProfileSchema:
 
 
 @dataclass
-class ProfileACRDirectorySchema:
+class ProfileACLDirectorySchema:
     alias: str
     descr: str
     physicalPath: str
