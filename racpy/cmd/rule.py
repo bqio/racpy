@@ -1,9 +1,5 @@
-from typing import List
 from .command import Command, Arg, Flag
 from ..session import Session
-from ..handlers import to_list, to_dict
-from ..utils import list_to_dc, to_dc
-from ..schemas import RuleSchema
 
 
 class Rule:
@@ -14,8 +10,8 @@ class Rule:
         partial: bool = False,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> None:
-        return session.exec(
+    ):
+        return session.call(
             Command(
                 Arg("rule"),
                 Arg("apply"),
@@ -34,8 +30,8 @@ class Rule:
         rule_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> RuleSchema:
-        rule = session.exec(
+    ):
+        return session.exec(
             Command(
                 Arg("rule"),
                 Arg("info"),
@@ -44,10 +40,8 @@ class Rule:
                 Arg(rule_uuid, "--rule={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
-            ),
-            to_dict,
-        )
-        return to_dc(rule, RuleSchema)
+            )
+        ).to_dict()
 
     @staticmethod
     def list(
@@ -56,8 +50,8 @@ class Rule:
         server_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> List[RuleSchema]:
-        rules = session.exec(
+    ):
+        return session.exec(
             Command(
                 Arg("rule"),
                 Arg("list"),
@@ -65,12 +59,8 @@ class Rule:
                 Arg(server_uuid, "--server={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
-            ),
-            to_list,
-        )
-        if rules is None or len(rules) == 0:
-            return []
-        return list_to_dc(rules, RuleSchema)
+            )
+        ).to_list()
 
     @staticmethod
     def create(
@@ -85,7 +75,7 @@ class Rule:
         priority: int | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> str:
+    ):
         rule = session.exec(
             Command(
                 Arg("rule"),
@@ -100,10 +90,9 @@ class Rule:
                 Arg(priority, "--priority={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
-            ),
-            to_dict,
-        )
-        return rule["rule"]
+            )
+        ).to_dict()
+        return str(rule["rule"])
 
     @staticmethod
     def update(
@@ -119,8 +108,8 @@ class Rule:
         priority: int | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> None:
-        return session.exec(
+    ):
+        return session.call(
             Command(
                 Arg("rule"),
                 Arg("update"),
@@ -146,8 +135,8 @@ class Rule:
         rule_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> None:
-        return session.exec(
+    ):
+        return session.call(
             Command(
                 Arg("rule"),
                 Arg("remove"),

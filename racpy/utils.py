@@ -1,21 +1,17 @@
-from typing import Type, TypeVar
+from typing import TypeVar
 
 T = TypeVar("T")
 
 
-def get_array_chunks(arr: list[tuple], n: int) -> list[list]:
+def get_array_chunks(arr: list[tuple[str, str]], n: int) -> list[list[tuple[str, str]]]:
     return [arr[i : i + n] for i in range(0, len(arr), n)]
 
 
-def get_dict_entry_count(output_lines: list[str]) -> int:
-    idx = 0
-    for line in output_lines:
-        if line == "":
-            return idx
-        idx += 1
+def dict_entry_count(lines: list[str]) -> int:
+    return next((i for i, line in enumerate(lines) if line == ""), len(lines))
 
 
-def b2yn(b: bool) -> str:
+def b2yn(b: bool | None) -> str | None:
     match b:
         case True:
             return "yes"
@@ -25,7 +21,7 @@ def b2yn(b: bool) -> str:
             return None
 
 
-def b2of(b: bool) -> str:
+def b2of(b: bool | None) -> str | None:
     match b:
         case True:
             return "on"
@@ -35,7 +31,7 @@ def b2of(b: bool) -> str:
             return None
 
 
-def b2da(b: bool) -> str:
+def b2da(b: bool | None) -> str | None:
     match b:
         case True:
             return "allow"
@@ -45,7 +41,7 @@ def b2da(b: bool) -> str:
             return None
 
 
-def b2ana(b: bool) -> str:
+def b2ana(b: bool | None) -> str | None:
     match b:
         case True:
             return "analyze"
@@ -55,7 +51,7 @@ def b2ana(b: bool) -> str:
             return None
 
 
-def any2b(an: str) -> bool | str:
+def any2b(an: str | int) -> bool | str | int:
     match an:
         case "yes":
             return True
@@ -75,13 +71,3 @@ def any2b(an: str) -> bool | str:
             return False
         case _:
             return an
-
-
-def to_dc(entry: dict, dc: Type[T]) -> T:
-    for key in entry:
-        entry[key] = any2b(entry[key])
-    return dc(**entry)
-
-
-def list_to_dc(entry_list: list[dict], dc: Type[T]) -> list[T]:
-    return [dc(**entry) for entry in entry_list]

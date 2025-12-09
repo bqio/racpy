@@ -1,15 +1,8 @@
-from typing import List
 from .command import Command, Arg
 from ..session import Session
-from ..handlers import to_list, to_dict
-from ..utils import list_to_dc, to_dc
-from ..schemas import ServerSchema, PortRange
-from ..enums import Using, DedicateManagers
 
 
 class Server:
-    """Режим администрирования рабочего сервера."""
-
     @staticmethod
     def info(
         session: Session,
@@ -17,21 +10,8 @@ class Server:
         server: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> ServerSchema:
-        """
-        Получение информации о рабочем сервере.
-
-        Args:
-            session (Session): Уникальная сессия подключения.
-            cluster (str): Идентификатор кластера серверов.
-            server (str): Идентификатор рабочего сервера кластера серверов.
-            cluster_user (str | None): Имя администратора кластера.
-            cluster_pwd (str | None): Пароль администратора кластера.
-
-        Returns:
-            ServerSchema: Рабочий сервер.
-        """
-        _server = session.exec(
+    ):
+        return session.exec(
             Command(
                 Arg("server"),
                 Arg(cluster, "--cluster={}"),
@@ -39,10 +19,8 @@ class Server:
                 Arg(cluster_pwd, "--cluster-pwd={}"),
                 Arg("info"),
                 Arg(server, "--server={}"),
-            ),
-            to_dict,
-        )
-        return to_dc(_server, ServerSchema)
+            )
+        ).to_dict()
 
     @staticmethod
     def list(
@@ -50,32 +28,16 @@ class Server:
         cluster: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> List[ServerSchema]:
-        """
-        Получение списка информации о рабочих серверах.
-
-        Args:
-            session (Session): Уникальная сессия подключения.
-            cluster (str): Идентификатор кластера серверов.
-            cluster_user (str | None): Имя администратора кластера.
-            cluster_pwd (str | None): Пароль администратора кластера.
-
-        Returns:
-            List[ServerSchema]: Список рабочих серверов.
-        """
-        servers = session.exec(
+    ):
+        return session.exec(
             Command(
                 Arg("server"),
                 Arg(cluster, "--cluster={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
                 Arg("list"),
-            ),
-            to_list,
-        )
-        if servers is None or len(servers) == 0:
-            return []
-        return list_to_dc(servers, ServerSchema)
+            )
+        ).to_list()
 
     @staticmethod
     def insert(
@@ -83,14 +45,14 @@ class Server:
         cluster: str,
         agent_host: str,
         agent_port: int,
-        port_range: PortRange,
+        port_range: str,
         name: str | None = None,
-        using: Using = Using.MAIN,
+        using: str = "main",
         infobases_limit: int = 8,
         memory_limit: int | None = None,
         connections_limit: int = 256,
         cluster_port: int | None = None,
-        dedicate_managers: DedicateManagers = DedicateManagers.ALL,
+        dedicate_managers: str = "all",
         safe_working_processess_memory_limit: int | None = None,
         safe_call_memory_limit: int | None = None,
         critical_total_memory: int | None = None,
@@ -100,8 +62,8 @@ class Server:
         speech_to_text_model_directory: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> str:
-        return session.exec(
+    ):
+        server = session.exec(
             Command(
                 Arg("server"),
                 Arg(cluster, "--cluster={}"),
@@ -110,7 +72,7 @@ class Server:
                 Arg("insert"),
                 Arg(agent_host, "--agent-host={}"),
                 Arg(agent_port, "--agent-port={}"),
-                Arg(port_range, "--port-range={}"),
+                Arg(str(port_range), "--port-range={}"),
                 Arg(name, "--name={}"),
                 Arg(using, "--using={}"),
                 Arg(infobases_limit, "--infobases-limit={}"),
@@ -137,9 +99,9 @@ class Server:
                     speech_to_text_model_directory,
                     "--speech-to-text-model-directory={}",
                 ),
-            ),
-            to_dict,
-        )["server"]
+            )
+        ).to_dict()
+        return str(server["server"])
 
     @staticmethod
     def update(
@@ -163,8 +125,8 @@ class Server:
         speech_to_text_model_directory: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> None:
-        return session.exec(
+    ):
+        return session.call(
             Command(
                 Arg("server"),
                 Arg("update"),
@@ -209,8 +171,8 @@ class Server:
         server_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> None:
-        return session.exec(
+    ):
+        return session.call(
             Command(
                 Arg("server"),
                 Arg("remove"),

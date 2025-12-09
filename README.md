@@ -1,20 +1,16 @@
-# RacPy 8.3.24.1667
+# RacPy 8.3.27.1688
 
 Библиотека на языке Python, которая позволяет взаимодействовать с сервером администрирования 1С через утилиту RAC, предоставляя соответствующие сущности.
 
 ## Установка
 
 ```bash
-pip install git+https://github.com/bqio/racpy.git@8.3.24.1667
+pip install git+https://github.com/bqio/racpy.git@8.3.27.1688
 ```
 
 ## TODO
 
 - profile module
-
-## Сущности
-
-[Возвращаемые схемы данных](https://github.com/bqio/racpy/blob/main/racpy/schemas.py)
 
 ### Клиент
 
@@ -114,7 +110,7 @@ from racpy import Client, Session, Cluster
 ...
 
 # Получение UUID первого кластера
-cluster_id = Cluster.list(session=session)[0].cluster
+cluster_id = Cluster.list(session=session)[0]["cluster"]
 
 # Получение списка администраторов кластера
 cluster_admins = Cluster.Admin.list(session=session, cluster_uuid=cluster_id)
@@ -142,7 +138,7 @@ from racpy import Client, Session, Cluster, Infobase
 ...
 
 # Получение UUID первого кластера
-cluster_id = Cluster.list(session=session)[0].cluster
+cluster_id = Cluster.list(session=session)[0]["cluster"]
 
 # Получение списка информационных баз
 infobases = Infobase.list(session=session, cluster_uuid=cluster_id)
@@ -193,7 +189,7 @@ from racpy import Client, Session, Cluster, Server
 ...
 
 # Получение UUID первого кластера
-cluster_id = Cluster.list(session=session)[0].cluster
+cluster_id = Cluster.list(session=session)[0]["cluster"]
 
 # Получение списока рабочих серверов кластера
 servers = Server.list(session=session, cluster_uuid=cluster_id)
@@ -234,16 +230,16 @@ from racpy import Client, Session, Cluster, Server, Process
 ...
 
 # Получение UUID первого кластера
-cluster_id = Cluster.list(session=session)[0].cluster
+cluster_id = Cluster.list(session=session)[0]["cluster"]
 
 # Получение UUID первого рабочего сервера кластера
-server_id = Server.list(session=session, cluster_uuid=cluster_id)[0].server
+server_id = Server.list(session=session, cluster_uuid=cluster_id)[0]["server"]
 
 # Получение списка рабочих процессов
 processes = Process.list(session=session, cluster_uuid=cluster_id, server_uuid=server_id)
 
 # Получение информации рабочего процесса вместе с лицензиями
-process_id = processes[0].process
+process_id = processes[0]["process"]
 process_info = Process.info(
     session=session, cluster_uuid=cluster_id, process_uuid=process_id, licenses=True
 )
@@ -259,12 +255,12 @@ from racpy import Client, Session, Cluster, Server, Infobase, Process, Connectio
 ...
 
 # Получение необходимых UUID
-cluster_id = Cluster.list(session=session)[0].cluster
-server_id = Server.list(session=session, cluster_uuid=cluster_id)[0].server
+cluster_id = Cluster.list(session=session)[0]["cluster"]
+server_id = Server.list(session=session, cluster_uuid=cluster_id)[0]["server"]
 process_id = Process.list(
     session=session, cluster_uuid=cluster_id, server_uuid=server_id
-)[0].process
-infobase_id = Infobase.list(session=session, cluster_uuid=cluster_id)[0].infobase
+)[0]["process"]
+infobase_id = Infobase.list(session=session, cluster_uuid=cluster_id)[0]["infobase"]
 
 # Получение списка соединений
 connections = Connection.list(
@@ -275,7 +271,7 @@ connections = Connection.list(
 )
 
 # Получение информации соединения
-connection_id = connections[0].connection
+connection_id = connections[0]["connection"]
 connection_info = Connection.info(
     session=session, cluster_uuid=cluster_id, connection_uuid=connection_id
 )
@@ -299,7 +295,7 @@ from racpy import Client, Session, Cluster, Infobase, UserSession
 ...
 
 # Получение необходимых UUID
-cluster_id = Cluster.list(session=session)[0].cluster
+cluster_id = Cluster.list(session=session)[0]["cluster"]
 
 # Получение активных сеансов сервера
 active_user_sessions = UserSession.list(
@@ -307,13 +303,13 @@ active_user_sessions = UserSession.list(
 )
 
 # Получение активных сеансов в информационной базе
-infobase_id = Infobase.list(session=session, cluster_uuid=cluster_id)[0].infobase
+infobase_id = Infobase.list(session=session, cluster_uuid=cluster_id)[0]["infobase"]
 active_user_sessions_ib = UserSession.list(
     session=session, cluster_uuid=cluster_id, infobase_uuid=infobase_id
 )
 
 # Получение полной информации сеанса с указанием лицензий
-user_session_id = active_user_sessions[0].session
+user_session_id = active_user_sessions[0]["session"]
 user_session_info = UserSession.info(
     session=session,
     cluster_uuid=cluster_id,
@@ -340,13 +336,13 @@ from racpy import Client, Session, Cluster, Manager
 ...
 
 # Получение UUID первого кластера
-cluster_id = Cluster.list(session=session)[0].cluster
+cluster_id = Cluster.list(session=session)[0]["cluster"]
 
 # Получение списка менеджеров
 managers = Manager.list(session=session, cluster_uuid=cluster_id)
 
 # Получение информации о менеджере по его UUID
-manager_id = managers[0].manager
+manager_id = managers[0]["manager"]
 manager_info = Manager.info(
     session=session, cluster_uuid=cluster_id, manager_uuid=manager_id
 )
@@ -362,7 +358,7 @@ from racpy import Client, Session, Cluster, Service
 ...
 
 # Получение UUID первого кластера
-cluster_id = Cluster.list(session=session)[0].cluster
+cluster_id = Cluster.list(session=session)[0]["cluster"]
 
 # Получение списка сервисов
 services = Service.list(session=session, cluster_uuid=cluster_id)
@@ -378,12 +374,12 @@ from racpy import Client, Session, Cluster, Server, Process, Infobase, Connectio
 ...
 
 # Получение необходимых UUID
-cluster_id = Cluster.list(session=session)[0].cluster
-server_id = Server.list(session=session, cluster_uuid=cluster_id)[0].server
+cluster_id = Cluster.list(session=session)[0]["cluster"]
+server_id = Server.list(session=session, cluster_uuid=cluster_id)[0]["server"]
 process_id = Process.list(
     session=session, cluster_uuid=cluster_id, server_uuid=server_id
-)[0].process
-infobase_id = Infobase.list(session=session, cluster_uuid=cluster_id)[0].infobase
+)[0]["process"]
+infobase_id = Infobase.list(session=session, cluster_uuid=cluster_id)[0]["infobase"]
 connection_id = Connection.list(
     session=session,
     cluster_uuid=cluster_id,
@@ -391,10 +387,10 @@ connection_id = Connection.list(
     infobase_uuid=infobase_id,
     infobase_user="admin",
     infobase_pwd="password",
-)[0].connection
+)[0]["connection"]
 user_session_id = UserSession.list(
     session=session, cluster_uuid=cluster_id, infobase_uuid=infobase_id
-)[0].session
+)[0]["session"]
 
 # Получение списка блокировок
 locks = Lock.list(
@@ -416,7 +412,7 @@ from racpy import Client, Session, Cluster, Counter
 ...
 
 # Получение необходимых UUID
-cluster_id = Cluster.list(session=session)[0].cluster
+cluster_id = Cluster.list(session=session)[0]["cluster"]
 
 # Получение списка счётчиков
 counters = Counter.list(session=session, cluster_uuid=cluster_id)
@@ -461,7 +457,7 @@ from racpy import Client, Session, Cluster, Limit
 ...
 
 # Получение необходимых UUID
-cluster_id = Cluster.list(session=session)[0].cluster
+cluster_id = Cluster.list(session=session)[0]["cluster"]
 
 # Получение списка ограничений
 limits = Limit.list(session=session, cluster_uuid=cluster_id)
@@ -492,8 +488,8 @@ from racpy import Client, Session, Cluster, Server, Rule
 ...
 
 # Получение необходимых UUID
-cluster_id = Cluster.list(session=session)[0].cluster
-server_id = Server.list(session=session, cluster_uuid=cluster_id)[0].server
+cluster_id = Cluster.list(session=session)[0]["cluster"]
+server_id = Server.list(session=session, cluster_uuid=cluster_id)[0]["server"]
 
 # Создание требования и возврат его UUID
 rule_id = Rule.create(

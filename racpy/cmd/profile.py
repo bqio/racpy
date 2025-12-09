@@ -1,9 +1,6 @@
-from typing import List, Literal
-from .command import Command, Arg, Flag
+from .command import Command, Arg
 from ..session import Session
-from ..handlers import to_list, to_dict, to_str
-from ..utils import list_to_dc, to_dc, b2yn
-from ..schemas import ProfileSchema, ProfileACLDirectorySchema
+from ..utils import b2yn
 
 
 class Profile:
@@ -13,20 +10,16 @@ class Profile:
         cluster_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> List[ProfileSchema]:
-        profiles = session.exec(
+    ):
+        return session.exec(
             Command(
                 Arg("profile"),
                 Arg("list"),
                 Arg(cluster_uuid, "--cluster={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
-            ),
-            to_list,
-        )
-        if profiles is None or len(profiles) == 0:
-            return []
-        return list_to_dc(profiles, ProfileSchema)
+            )
+        ).to_list()
 
     @staticmethod
     def update(
@@ -46,8 +39,8 @@ class Profile:
         modules_not_available_for_extension: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> None:
-        return session.exec(
+    ):
+        return session.call(
             Command(
                 Arg("profile"),
                 Arg("update"),
@@ -85,8 +78,8 @@ class Profile:
         name: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> None:
-        return session.exec(
+    ):
+        return session.call(
             Command(
                 Arg("profile"),
                 Arg("remove"),
@@ -104,11 +97,11 @@ class Profile:
                 session: Session,
                 cluster_uuid: str,
                 name: str,
-                access: Literal["list", "full"] = "list",
+                access: str = "list",
                 cluster_user: str | None = None,
                 cluster_pwd: str | None = None,
-            ) -> List[ProfileACLDirectorySchema]:
-                dirs = session.exec(
+            ):
+                return session.exec(
                     Command(
                         Arg("profile"),
                         Arg("acl"),
@@ -119,12 +112,8 @@ class Profile:
                         Arg("directory"),
                         Arg("list"),
                         Arg(access, "--access={}"),
-                    ),
-                    to_list,
-                )
-                if dirs is None or len(dirs) == 0:
-                    return []
-                return list_to_dc(dirs, ProfileACLDirectorySchema)
+                    )
+                ).to_list()
 
             @staticmethod
             def update(
@@ -136,11 +125,11 @@ class Profile:
                 physicalPath: str | None = None,
                 allowedRead: bool | None = None,
                 allowedWrite: bool | None = None,
-                access: Literal["list", "full"] = "list",
+                access: str = "list",
                 cluster_user: str | None = None,
                 cluster_pwd: str | None = None,
-            ) -> None:
-                return session.exec(
+            ):
+                return session.call(
                     Command(
                         Arg("profile"),
                         Arg("acl"),
@@ -168,8 +157,8 @@ class Profile:
                 access: str = "list",
                 cluster_user: str | None = None,
                 cluster_pwd: str | None = None,
-            ) -> None:
-                return session.exec(
+            ):
+                return session.call(
                     Command(
                         Arg("profile"),
                         Arg("acl"),

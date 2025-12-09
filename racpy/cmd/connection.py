@@ -1,83 +1,73 @@
-from typing import List
 from .command import Command, Arg
 from ..session import Session
-from ..handlers import to_list, to_dict
-from ..utils import list_to_dc, to_dc
-from ..schemas import ConnectionSchema, ConnectionShortSchema
 
 
 class Connection:
     @staticmethod
     def info(
         session: Session,
-        cluster_uuid: str,
-        connection_uuid: str,
+        cluster: str,
+        connection: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> ConnectionShortSchema:
-        connection = session.exec(
+    ):
+        return session.exec(
             Command(
                 Arg("connection"),
-                Arg("info"),
-                Arg(cluster_uuid, "--cluster={}"),
-                Arg(connection_uuid, "--connection={}"),
+                Arg(cluster, "--cluster={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
-            ),
-            to_dict,
-        )
-        return to_dc(connection, ConnectionShortSchema)
+                Arg("info"),
+                Arg(connection, "--connection={}"),
+            )
+        ).to_dict()
 
     @staticmethod
     def list(
         session: Session,
-        cluster_uuid: str,
-        process_uuid: str,
-        infobase_uuid: str,
+        cluster: str,
+        process: str | None = None,
+        infobase: str | None = None,
         infobase_user: str | None = None,
         infobase_pwd: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> List[ConnectionSchema]:
-        connections = session.exec(
-            Command(
-                Arg("connection"),
-                Arg("list"),
-                Arg(cluster_uuid, "--cluster={}"),
-                Arg(process_uuid, "--process={}"),
-                Arg(infobase_uuid, "--infobase={}"),
-                Arg(infobase_user, "--infobase-user={}"),
-                Arg(infobase_pwd, "--infobase-pwd={}"),
-                Arg(cluster_user, "--cluster-user={}"),
-                Arg(cluster_pwd, "--cluster-pwd={}"),
-            ),
-            to_list,
-        )
-        if connections is None or len(connections) == 0:
-            return []
-        return list_to_dc(connections, ConnectionSchema)
-
-    @staticmethod
-    def kill(
-        session: Session,
-        cluster_uuid: str,
-        process_uuid: str,
-        connection_uuid: str,
-        infobase_user: str | None = None,
-        infobase_pwd: str | None = None,
-        cluster_user: str | None = None,
-        cluster_pwd: str | None = None,
-    ) -> None:
+    ):
         return session.exec(
             Command(
                 Arg("connection"),
-                Arg("disconnect"),
-                Arg(cluster_uuid, "--cluster={}"),
-                Arg(process_uuid, "--process={}"),
-                Arg(connection_uuid, "--connection={}"),
-                Arg(infobase_user, "--infobase-user={}"),
-                Arg(infobase_pwd, "--infobase-pwd={}"),
+                Arg(cluster, "--cluster={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
+                Arg("list"),
+                Arg(process, "--process={}"),
+                Arg(infobase, "--infobase={}"),
+                Arg(infobase_user, "--infobase-user={}"),
+                Arg(infobase_pwd, "--infobase-pwd={}"),
+            )
+        ).to_list()
+
+    @staticmethod
+    def disconnect(
+        session: Session,
+        cluster: str,
+        process: str,
+        connection: str,
+        infobase_user: str | None = None,
+        infobase_pwd: str | None = None,
+        cluster_user: str | None = None,
+        cluster_pwd: str | None = None,
+    ):
+        return session.call(
+            Command(
+                Arg("connection"),
+                Arg(cluster, "--cluster={}"),
+                Arg(cluster_user, "--cluster-user={}"),
+                Arg(cluster_pwd, "--cluster-pwd={}"),
+                Arg("disconnect"),
+                Arg(process, "--process={}"),
+                Arg(connection, "--connection={}"),
+                Arg(infobase_user, "--infobase-user={}"),
+                Arg(infobase_pwd, "--infobase-pwd={}"),
             )
         )

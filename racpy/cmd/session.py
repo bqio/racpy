@@ -1,9 +1,5 @@
-from typing import List
 from .command import Command, Arg, Flag
 from ..session import Session
-from ..handlers import to_list, to_dict
-from ..utils import list_to_dc, to_dc
-from ..schemas import UserSessionSchema, UserSessionWithLicensesSchema
 
 
 class UserSession:
@@ -15,8 +11,8 @@ class UserSession:
         licenses: bool = False,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> UserSessionSchema | UserSessionWithLicensesSchema:
-        user_session = session.exec(
+    ):
+        return session.exec(
             Command(
                 Arg("session"),
                 Arg("info"),
@@ -25,12 +21,8 @@ class UserSession:
                 Flag(licenses, "--licenses"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
-            ),
-            to_dict,
-        )
-        if licenses:
-            return to_dc(user_session, UserSessionWithLicensesSchema)
-        return to_dc(user_session, UserSessionSchema)
+            )
+        ).to_dict()
 
     @staticmethod
     def list(
@@ -40,8 +32,8 @@ class UserSession:
         licenses: bool = False,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> List[UserSessionSchema | UserSessionWithLicensesSchema]:
-        sessions = session.exec(
+    ):
+        return session.exec(
             Command(
                 Arg("session"),
                 Arg("list"),
@@ -50,14 +42,8 @@ class UserSession:
                 Flag(licenses, "--licenses"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
-            ),
-            to_list,
-        )
-        if sessions is None or len(sessions) == 0:
-            return []
-        if licenses:
-            return list_to_dc(sessions, UserSessionWithLicensesSchema)
-        return list_to_dc(sessions, UserSessionSchema)
+            )
+        ).to_list()
 
     @staticmethod
     def kill(
@@ -67,8 +53,8 @@ class UserSession:
         error_message: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> None:
-        return session.exec(
+    ):
+        return session.call(
             Command(
                 Arg("session"),
                 Arg("terminate"),
@@ -88,8 +74,8 @@ class UserSession:
         error_message: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> None:
-        return session.exec(
+    ):
+        return session.call(
             Command(
                 Arg("session"),
                 Arg("interrupt-current-server-call"),
