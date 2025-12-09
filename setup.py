@@ -2,6 +2,6 @@ from setuptools import setup, find_packages  # type: ignore
 
 setup(
     name="racpy",
-    version="8.3.24.1667",
+    version="8.3.27.1688",
     packages=find_packages(),
 )
