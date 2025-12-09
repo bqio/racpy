@@ -17,15 +17,9 @@ class RawOutput:
         self.output = output
 
     def to_str(self) -> str:
-        """
-        Конвертировать сырой результат в `str`.
-        """
         return self.output.strip()
 
     def to_dict(self) -> dict[str, str | int]:
-        """
-        Конвертировать сырой результат в `dict[str, str | int]`.
-        """
         matches: list[tuple[str, str]] = re.findall(LIST_DICT_REGEX, self.output)
         _dict: dict[str, str | int] = {}
         for prop in matches:
@@ -38,21 +32,12 @@ class RawOutput:
         return _dict
 
     def to_dataclass(self, dc: Type[T]) -> T:
-        """
-        Конвертировать сырой результат в `T`.
-        """
         return dc(**self.to_dict())
 
     def to_list_of_dataclass(self, dc: Type[T]) -> list[T]:
-        """
-        Конвертировать сырой результат в `list[T]`.
-        """
         return [dc(**entry) for entry in self.to_list()]
 
     def to_list(self) -> list[dict[str, str | int]]:
-        """
-        Конвертировать сырой результат в `list[dict[str, str | int]]`.
-        """
         entry_count = dict_entry_count(self.output.split("\n"))
         matches: list[tuple[str, str]] = re.findall(LIST_DICT_REGEX, self.output)
         if matches == []:
@@ -80,33 +65,12 @@ class Session:
         port: int = 1545,
         debug: bool = False,
     ):
-        """
-        Класс представляет уникальную сессию для подключения к серверу администрирования.
-
-        Args:
-            client (Client): Клиент для подключения к консольной утилите
-                1С Remote Administrative Client.
-            host (str): Хост или IP адрес сервера администрирования.
-            port (int): Порт сервера администрирования.
-            debug (bool): Выводить дополнительную информацию в консоль для отладки.
-        Returns:
-            Session: Уникальная сессия.
-        """
         self.client = client
         self.host = host
         self.port = port
         self._debug = debug
 
     def exec(self, command: Command) -> RawOutput:
-        """
-        Выполнить команду и вернуть сырой результат.
-
-        Args:
-            command (Command): Команда.
-
-        Returns:
-            RawOutput: Сырой результат.
-        """
         args: list[str] = [
             str(self.client.rac_path),
             f"{self.host}:{self.port}",
@@ -130,10 +94,4 @@ class Session:
             raise errors.RACNotFoundError
 
     def call(self, command: Command) -> None:
-        """
-        Выполнить команду без возврата результата.
-
-        Args:
-            command (Command): Команда.
-        """
         self.exec(command)
