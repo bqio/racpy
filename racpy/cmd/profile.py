@@ -1,9 +1,6 @@
-from typing import List
-from .command import Command, Arg, Flag
+from .command import Command, Arg
 from ..session import Session
-from ..handlers import to_list, to_dict, to_str
-from ..utils import list_to_dc, to_dc, b2yn
-from ..schemas import ProfileSchema, ProfileACRDirectorySchema
+from ..utils import b2yn
 
 
 class Profile:
@@ -13,26 +10,22 @@ class Profile:
         cluster_uuid: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> List[ProfileSchema]:
-        profiles = session.exec(
+    ):
+        return session.exec(
             Command(
                 Arg("profile"),
                 Arg("list"),
                 Arg(cluster_uuid, "--cluster={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
-            ),
-            to_list,
-        )
-        if profiles is None or len(profiles) == 0:
-            return []
-        return list_to_dc(profiles, ProfileSchema)
+            )
+        ).to_list()
 
     @staticmethod
     def update(
         session: Session,
         cluster_uuid: str,
-        profile_name: str,
+        name: str,
         descr: str | None = None,
         config: bool | None = None,
         priv: bool | None = None,
@@ -46,13 +39,13 @@ class Profile:
         modules_not_available_for_extension: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> None:
-        return session.exec(
+    ):
+        return session.call(
             Command(
                 Arg("profile"),
                 Arg("update"),
                 Arg(cluster_uuid, "--cluster={}"),
-                Arg(profile_name, "--name={}"),
+                Arg(name, "--name={}"),
                 Arg(descr, "--descr={}"),
                 Arg(b2yn(config), "--config={}"),
                 Arg(b2yn(priv), "--priv={}"),
@@ -82,91 +75,115 @@ class Profile:
     def remove(
         session: Session,
         cluster_uuid: str,
-        profile_name: str,
+        name: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> None:
-        return session.exec(
+    ):
+        return session.call(
             Command(
                 Arg("profile"),
                 Arg("remove"),
                 Arg(cluster_uuid, "--cluster={}"),
-                Arg(profile_name, "--name={}"),
+                Arg(name, "--name={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
             )
         )
 
+    class ACL:
+        class Directory:
+            @staticmethod
+            def list(
+                session: Session,
+                cluster_uuid: str,
+                name: str,
+                access: str = "list",
+                cluster_user: str | None = None,
+                cluster_pwd: str | None = None,
+            ):
+                return session.exec(
+                    Command(
+                        Arg("profile"),
+                        Arg("acl"),
+                        Arg(cluster_uuid, "--cluster={}"),
+                        Arg(name, "--name={}"),
+                        Arg(cluster_user, "--cluster-user={}"),
+                        Arg(cluster_pwd, "--cluster-pwd={}"),
+                        Arg("directory"),
+                        Arg("list"),
+                        Arg(access, "--access={}"),
+                    )
+                ).to_list()
 
-class ProfileACLDirectory:
-    @staticmethod
-    def list(
-        session: Session,
-        cluster_uuid: str,
-        profile_name: str,
-        access: str = "list",
-        cluster_user: str | None = None,
-        cluster_pwd: str | None = None,
-    ) -> List[ProfileACRDirectorySchema]:
-        dirs = session.exec(
-            Command(
-                Arg("profile"),
-                Arg("acl"),
-                Arg("directory"),
-                Arg("list"),
-                Arg(cluster_uuid, "--cluster={}"),
-                Arg(profile_name, "--name={}"),
-                Arg(access, "--access={}"),
-                Arg(cluster_user, "--cluster-user={}"),
-                Arg(cluster_pwd, "--cluster-pwd={}"),
-            ),
-            to_list,
-        )
-        if dirs is None or len(dirs) == 0:
-            return []
-        return list_to_dc(dirs, ProfileACRDirectorySchema)
+            @staticmethod
+            def update(
+                session: Session,
+                cluster_uuid: str,
+                name: str,
+                alias: str,
+                descr: str | None = None,
+                physicalPath: str | None = None,
+                allowedRead: bool | None = None,
+                allowedWrite: bool | None = None,
+                access: str = "list",
+                cluster_user: str | None = None,
+                cluster_pwd: str | None = None,
+            ):
+                return session.call(
+                    Command(
+                        Arg("profile"),
+                        Arg("acl"),
+                        Arg(cluster_uuid, "--cluster={}"),
+                        Arg(name, "--name={}"),
+                        Arg(cluster_user, "--cluster-user={}"),
+                        Arg(cluster_pwd, "--cluster-pwd={}"),
+                        Arg("directory"),
+                        Arg("update"),
+                        Arg(alias, "--alias={}"),
+                        Arg(descr, "--descr={}"),
+                        Arg(physicalPath, "--physicalPath={}"),
+                        Arg(b2yn(allowedRead), "--allowedRead={}"),
+                        Arg(b2yn(allowedWrite), "--allowedWrite={}"),
+                        Arg(access, "--access={}"),
+                    )
+                )
 
-    @staticmethod
-    def remove(
-        session: Session,
-        cluster_uuid: str,
-        profile_name: str,
-        alias: str,
-        access: str = "list",
-        cluster_user: str | None = None,
-        cluster_pwd: str | None = None,
-    ) -> None:
-        return session.exec(
-            Command(
-                Arg("profile"),
-                Arg("acl"),
-                Arg("directory"),
-                Arg("remove"),
-                Arg(cluster_uuid, "--cluster={}"),
-                Arg(profile_name, "--name={}"),
-                Arg(alias, "--alias={}"),
-                Arg(access, "--access={}"),
-                Arg(cluster_user, "--cluster-user={}"),
-                Arg(cluster_pwd, "--cluster-pwd={}"),
-            )
-        )
+            @staticmethod
+            def remove(
+                session: Session,
+                cluster_uuid: str,
+                profile_name: str,
+                alias: str,
+                access: str = "list",
+                cluster_user: str | None = None,
+                cluster_pwd: str | None = None,
+            ):
+                return session.call(
+                    Command(
+                        Arg("profile"),
+                        Arg("acl"),
+                        Arg("directory"),
+                        Arg("remove"),
+                        Arg(cluster_uuid, "--cluster={}"),
+                        Arg(profile_name, "--name={}"),
+                        Arg(alias, "--alias={}"),
+                        Arg(access, "--access={}"),
+                        Arg(cluster_user, "--cluster-user={}"),
+                        Arg(cluster_pwd, "--cluster-pwd={}"),
+                    )
+                )
 
+        class COM:
+            pass
 
-class ProfileACLCOM:
-    pass
+        class Addin:
+            pass
 
+        class Module:
+            pass
 
-class ProfileACLAddin:
-    pass
+        class App:
+            pass
 
-
-class ProfileACLModule:
-    pass
-
-
-class ProfileACLApp:
-    pass
-
-
-class ProfileACLInet:
-    pass
+        class Inet:
+            pass

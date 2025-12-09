@@ -1,41 +1,121 @@
-from typing import List
 from .command import Command, Arg
 from ..session import Session
-from ..handlers import to_list, to_dict
-from ..utils import b2yn, list_to_dc, to_dc
-from ..schemas import ClusterSchema, ClusterAdminSchema
+from ..utils import b2yn
 
 
 class Cluster:
+    class Admin:
+        @staticmethod
+        def list(
+            session: Session,
+            cluster: str,
+            cluster_user: str | None = None,
+            cluster_pwd: str | None = None,
+        ):
+            return session.exec(
+                Command(
+                    Arg("cluster"),
+                    Arg("admin"),
+                    Arg(cluster, "--cluster={}"),
+                    Arg(cluster_user, "--cluster-user={}"),
+                    Arg(cluster_pwd, "--cluster-pwd={}"),
+                    Arg("list"),
+                )
+            ).to_list()
+
+        @staticmethod
+        def register(
+            session: Session,
+            cluster: str,
+            name: str,
+            auth: str = "pwd",
+            pwd: str | None = None,
+            descr: str | None = None,
+            os_user: str | None = None,
+            cluster_user: str | None = None,
+            cluster_pwd: str | None = None,
+        ):
+            return session.call(
+                Command(
+                    Arg("cluster"),
+                    Arg("admin"),
+                    Arg(cluster, "--cluster={}"),
+                    Arg(cluster_user, "--cluster-user={}"),
+                    Arg(cluster_pwd, "--cluster-pwd={}"),
+                    Arg("register"),
+                    Arg(name, "--name={}"),
+                    Arg(pwd, "--pwd={}"),
+                    Arg(descr, "--descr={}"),
+                    Arg(auth, "--auth={}"),
+                    Arg(os_user, "--os-user={}"),
+                )
+            )
+
+        @staticmethod
+        def remove(
+            session: Session,
+            cluster: str,
+            name: str,
+            cluster_user: str | None = None,
+            cluster_pwd: str | None = None,
+        ):
+            return session.call(
+                Command(
+                    Arg("cluster"),
+                    Arg("admin"),
+                    Arg(cluster, "--cluster={}"),
+                    Arg(cluster_user, "--cluster-user={}"),
+                    Arg(cluster_pwd, "--cluster-pwd={}"),
+                    Arg("remove"),
+                    Arg(name, "--name={}"),
+                ),
+            )
+
     @staticmethod
-    def create(
+    def info(session: Session, cluster: str):
+        return session.exec(
+            Command(
+                Arg("cluster"),
+                Arg("info"),
+                Arg(cluster, "--cluster={}"),
+            )
+        ).to_dict()
+
+    @staticmethod
+    def list(session: Session):
+        return session.exec(
+            Command(
+                Arg("cluster"),
+                Arg("list"),
+            )
+        ).to_list()
+
+    @staticmethod
+    def insert(
         session: Session,
         host: str,
         port: int,
         name: str | None = None,
-        load_balancing_mode: str | None = None,
-        security_level: int | None = None,
-        kill_problem_processes: bool | None = None,
-        kill_by_memory_with_dump: bool | None = None,
-        expiration_timeout: int | None = None,
-        lifetime_limit: int | None = None,
+        expiration_timeout: int = 60,
+        lifetime_limit: int = 0,
         max_memory_size: int | None = None,
         max_memory_time_limit: int | None = None,
-        session_fault_tolerance_level: int | None = None,
+        security_level: str = "disabled",
+        session_fault_tolerance_level: int = 0,
+        load_balancing_mode: str = "performance",
         errors_count_threshold: int | None = None,
+        kill_problem_processes: bool = True,
+        kill_by_memory_with_dump: bool = False,
         agent_user: str | None = None,
         agent_pwd: str | None = None,
-    ) -> str:
-        return session.exec(
+    ):
+        cluster = session.exec(
             Command(
                 Arg("cluster"),
                 Arg("insert"),
                 Arg(host, "--host={}"),
                 Arg(port, "--port={}"),
                 Arg(name, "--name={}"),
-                Arg(load_balancing_mode, "--load-balancing-mode={}"),
-                Arg(b2yn(kill_problem_processes), "--kill-problem-processes={}"),
-                Arg(b2yn(kill_by_memory_with_dump), "--kill-by-memory-with-dump={}"),
                 Arg(expiration_timeout, "--expiration-timeout={}"),
                 Arg(lifetime_limit, "--lifetime-limit={}"),
                 Arg(max_memory_size, "--max-memory-size={}"),
@@ -44,40 +124,40 @@ class Cluster:
                 Arg(
                     session_fault_tolerance_level, "--session-fault-tolerance-level={}"
                 ),
+                Arg(load_balancing_mode, "--load-balancing-mode={}"),
                 Arg(errors_count_threshold, "--errors-count-threshold={}"),
+                Arg(b2yn(kill_problem_processes), "--kill-problem-processes={}"),
+                Arg(b2yn(kill_by_memory_with_dump), "--kill-by-memory-with-dump={}"),
                 Arg(agent_user, "--agent-user={}"),
                 Arg(agent_pwd, "--agent-pwd={}"),
-            ),
-            to_dict,
-        )["cluster"]
+            )
+        ).to_dict()
+        return str(cluster["cluster"])
 
     @staticmethod
     def update(
         session: Session,
-        cluster_uuid: str,
+        cluster: str,
         name: str | None = None,
-        load_balancing_mode: str | None = None,
-        kill_problem_processes: bool | None = None,
-        kill_by_memory_with_dump: bool | None = None,
         expiration_timeout: int | None = None,
         lifetime_limit: int | None = None,
         max_memory_size: int | None = None,
         max_memory_time_limit: int | None = None,
-        security_level: int | None = None,
+        security_level: str | None = None,
         session_fault_tolerance_level: int | None = None,
+        load_balancing_mode: str | None = None,
         errors_count_threshold: int | None = None,
+        kill_problem_processes: bool | None = None,
+        kill_by_memory_with_dump: bool | None = None,
         agent_user: str | None = None,
         agent_pwd: str | None = None,
-    ) -> None:
-        return session.exec(
+    ):
+        return session.call(
             Command(
                 Arg("cluster"),
                 Arg("update"),
-                Arg(cluster_uuid, "--cluster={}"),
+                Arg(cluster, "--cluster={}"),
                 Arg(name, "--name={}"),
-                Arg(load_balancing_mode, "--load-balancing-mode={}"),
-                Arg(b2yn(kill_problem_processes), "--kill-problem-processes={}"),
-                Arg(b2yn(kill_by_memory_with_dump), "--kill-by-memory-with-dump={}"),
                 Arg(expiration_timeout, "--expiration-timeout={}"),
                 Arg(lifetime_limit, "--lifetime-limit={}"),
                 Arg(max_memory_size, "--max-memory-size={}"),
@@ -86,153 +166,28 @@ class Cluster:
                 Arg(
                     session_fault_tolerance_level, "--session-fault-tolerance-level={}"
                 ),
+                Arg(load_balancing_mode, "--load-balancing-mode={}"),
                 Arg(errors_count_threshold, "--errors-count-threshold={}"),
+                Arg(b2yn(kill_problem_processes), "--kill-problem-processes={}"),
+                Arg(b2yn(kill_by_memory_with_dump), "--kill-by-memory-with-dump={}"),
                 Arg(agent_user, "--agent-user={}"),
                 Arg(agent_pwd, "--agent-pwd={}"),
-            ),
-            None,
-        )
-
-    @staticmethod
-    def remove(
-        session: Session,
-        cluster_uuid: str,
-        cluster_user: str | None = None,
-        cluster_pwd: str | None = None,
-    ) -> None:
-        return session.exec(
-            Command(
-                Arg("cluster"),
-                Arg("remove"),
-                Arg(cluster_uuid, "--cluster={}"),
-                Arg(cluster_user, "--cluster-user={}"),
-                Arg(cluster_pwd, "--cluster-pwd={}"),
             )
         )
 
     @staticmethod
-    def list(session: Session) -> List[ClusterSchema]:
-        clusters = session.exec(
-            Command(
-                Arg("cluster"),
-                Arg("list"),
-            ),
-            to_list,
-        )
-        if clusters is None or len(clusters) == 0:
-            return []
-        return list_to_dc(clusters, ClusterSchema)
-
-    @staticmethod
-    def first(session: Session) -> ClusterSchema | None:
-        clusters = Cluster.list(session)
-        if len(clusters) == 0:
-            return None
-        return clusters[0]
-
-    @staticmethod
-    def firstid(session: Session) -> str | None:
-        cluster = Cluster.first(session)
-        if cluster:
-            return cluster.cluster
-        return None
-
-    @staticmethod
-    def info(session: Session, cluster_uuid: str) -> ClusterSchema:
-        cluster = session.exec(
-            Command(
-                Arg("cluster"),
-                Arg("info"),
-                Arg(cluster_uuid, "--cluster={}"),
-            ),
-            to_dict,
-        )
-        return to_dc(cluster, ClusterSchema)
-
-
-class ClusterAdmin:
-    @staticmethod
-    def list(
-        session: Session,
-        cluster_uuid: str,
-        cluster_user: str | None = None,
-        cluster_pwd: str | None = None,
-    ) -> List[ClusterAdminSchema]:
-        admins = session.exec(
-            Command(
-                Arg("cluster"),
-                Arg("admin"),
-                Arg("list"),
-                Arg(cluster_uuid, "--cluster={}"),
-                Arg(cluster_user, "--cluster-user={}"),
-                Arg(cluster_pwd, "--cluster-pwd={}"),
-            ),
-            to_list,
-        )
-        if admins is None or len(admins) == 0:
-            return []
-        return list_to_dc(admins, ClusterAdminSchema)
-
-    @staticmethod
-    def first(
-        session: Session,
-        cluster_uuid: str,
-        cluster_user: str | None = None,
-        cluster_pwd: str | None = None,
-    ) -> ClusterAdminSchema | None:
-        admins = ClusterAdmin.list(session, cluster_uuid, cluster_user, cluster_pwd)
-        if len(admins) == 0:
-            return None
-        return admins[0]
-
-    @staticmethod
-    def create(
-        session: Session,
-        cluster_uuid: str,
-        admin_name: str | None = None,
-        auth_type: str = "pwd",
-        pwd: str | None = None,
-        descr: str | None = None,
-        os_user: str | None = None,
-        agent_user: str | None = None,
-        agent_pwd: str | None = None,
-        cluster_user: str | None = None,
-        cluster_pwd: str | None = None,
-    ) -> None:
-        return session.exec(
-            Command(
-                Arg("cluster"),
-                Arg("admin"),
-                Arg("register"),
-                Arg(cluster_uuid, "--cluster={}"),
-                Arg(admin_name, "--name={}"),
-                Arg(auth_type, "--auth={}"),
-                Arg(pwd, "--pwd={}"),
-                Arg(descr, "--descr={}"),
-                Arg(os_user, "--os-user={}"),
-                Arg(agent_user, "--agent-user={}"),
-                Arg(agent_pwd, "--agent-pwd={}"),
-                Arg(cluster_user, "--cluster-user={}"),
-                Arg(cluster_pwd, "--cluster-pwd={}"),
-            ),
-        )
-
-    @staticmethod
     def remove(
         session: Session,
-        cluster_uuid: str,
-        admin_name: str,
+        cluster: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> None:
-        return session.exec(
+    ):
+        return session.call(
             Command(
                 Arg("cluster"),
-                Arg("admin"),
                 Arg("remove"),
-                Arg(cluster_uuid, "--cluster={}"),
-                Arg(admin_name, "--name={}"),
+                Arg(cluster, "--cluster={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
-            ),
+            )
         )

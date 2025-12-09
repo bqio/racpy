@@ -1,7 +1,7 @@
 from .client import Client
 from .session import Session
-from .cmd.agent import Agent, AgentAdmin
-from .cmd.cluster import Cluster, ClusterAdmin
+from .cmd.agent import Agent
+from .cmd.cluster import Cluster
 from .cmd.connection import Connection
 from .cmd.infobase import Infobase
 from .cmd.process import Process
@@ -13,24 +13,14 @@ from .cmd.lock import Lock
 from .cmd.limit import Limit
 from .cmd.counter import Counter
 from .cmd.rule import Rule
-from .cmd.profile import (
-    Profile,
-    ProfileACLAddin,
-    ProfileACLApp,
-    ProfileACLCOM,
-    ProfileACLDirectory,
-    ProfileACLInet,
-    ProfileACLModule,
-)
+from .cmd.profile import Profile
 from . import errors
 
 __all__ = [
     "Client",
     "Session",
     "Agent",
-    "AgentAdmin",
     "Cluster",
-    "ClusterAdmin",
     "Connection",
     "Infobase",
     "Process",
@@ -43,11 +33,5 @@ __all__ = [
     "Counter",
     "Rule",
     "Profile",
-    "ProfileACLAddin",
-    "ProfileACLApp",
-    "ProfileACLCOM",
-    "ProfileACLDirectory",
-    "ProfileACLInet",
-    "ProfileACLModule",
     "errors",
 ]

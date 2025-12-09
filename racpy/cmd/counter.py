@@ -1,63 +1,54 @@
-from typing import List
 from .command import Command, Arg
 from ..session import Session
-from ..handlers import to_list, to_dict
-from ..utils import b2ana, to_dc, list_to_dc
-from ..schemas import CounterSchema, CounterValuesSchema
+from ..utils import b2ana
 
 
 class Counter:
     @staticmethod
     def list(
         session: Session,
-        cluster_uuid: str,
+        cluster: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> List[CounterSchema]:
-        counters = session.exec(
+    ):
+        return session.exec(
             Command(
                 Arg("counter"),
-                Arg("list"),
-                Arg(cluster_uuid, "--cluster={}"),
+                Arg(cluster, "--cluster={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
-            ),
-            to_list,
-        )
-        if counters is None or len(counters) == 0:
-            return []
-        return list_to_dc(counters, CounterSchema)
+                Arg("list"),
+            )
+        ).to_list()
 
     @staticmethod
     def info(
         session: Session,
-        cluster_uuid: str,
-        counter_name: str,
+        cluster: str,
+        counter: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> CounterSchema:
-        counter = session.exec(
+    ):
+        return session.exec(
             Command(
                 Arg("counter"),
-                Arg("info"),
-                Arg(cluster_uuid, "--cluster={}"),
-                Arg(counter_name, "--counter={}"),
+                Arg(cluster, "--cluster={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
-            ),
-            to_dict,
-        )
-        return to_dc(counter, CounterSchema)
+                Arg("info"),
+                Arg(counter, "--counter={}"),
+            )
+        ).to_dict()
 
     @staticmethod
     def update(
         session: Session,
-        cluster_uuid: str,
-        counter_name: str,
+        cluster: str,
+        name: str,
         collection_time: str,
         group: str,
         filter_type: str,
-        filter: str,
+        object: str | None = None,
         duration: bool | None = None,
         cpu_time: bool | None = None,
         memory: bool | None = None,
@@ -72,17 +63,19 @@ class Counter:
         descr: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> None:
-        return session.exec(
+    ):
+        return session.call(
             Command(
                 Arg("counter"),
+                Arg(cluster, "--cluster={}"),
+                Arg(cluster_user, "--cluster-user={}"),
+                Arg(cluster_pwd, "--cluster-pwd={}"),
                 Arg("update"),
-                Arg(cluster_uuid, "--cluster={}"),
-                Arg(counter_name, "--name={}"),
+                Arg(name, "--name={}"),
                 Arg(collection_time, "--collection-time={}"),
                 Arg(group, "--group={}"),
                 Arg(filter_type, "--filter-type={}"),
-                Arg(filter, "--filter={}"),
+                Arg(object, "--filter={}"),
                 Arg(b2ana(duration), "--duration={}"),
                 Arg(b2ana(cpu_time), "--cpu-time={}"),
                 Arg(b2ana(memory), "--memory={}"),
@@ -95,97 +88,87 @@ class Counter:
                 Arg(b2ana(number_of_active_sessions), "--number-of-active-sessions={}"),
                 Arg(b2ana(number_of_sessions), "--number-of-sessions={}"),
                 Arg(descr, "--descr={}"),
-                Arg(cluster_user, "--cluster-user={}"),
-                Arg(cluster_pwd, "--cluster-pwd={}"),
-            ),
+            )
         )
 
     @staticmethod
     def values(
         session: Session,
-        cluster_uuid: str,
-        counter_name: str,
-        counter_object: str | None = None,
+        cluster: str,
+        counter: str,
+        object: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> List[CounterValuesSchema]:
-        values = session.exec(
+    ):
+        return session.exec(
             Command(
                 Arg("counter"),
-                Arg("values"),
-                Arg(cluster_uuid, "--cluster={}"),
-                Arg(counter_name, "--counter={}"),
-                Arg(counter_object, "--object={}"),
+                Arg(cluster, "--cluster={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
-            ),
-            to_list,
-        )
-        if values is None or len(values) == 0:
-            return []
-        return list_to_dc(values, CounterValuesSchema)
+                Arg("values"),
+                Arg(counter, "--counter={}"),
+                Arg(str(object), "--object={}"),
+            )
+        ).to_list()
 
     @staticmethod
     def remove(
         session: Session,
-        cluster_uuid: str,
-        counter_name: str,
+        cluster: str,
+        name: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> None:
-        return session.exec(
+    ):
+        return session.call(
             Command(
                 Arg("counter"),
-                Arg("remove"),
-                Arg(cluster_uuid, "--cluster={}"),
-                Arg(counter_name, "--name={}"),
+                Arg(cluster, "--cluster={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
+                Arg("remove"),
+                Arg(name, "--name={}"),
             ),
         )
 
     @staticmethod
     def clear(
         session: Session,
-        cluster_uuid: str,
-        counter_name: str,
-        counter_object: str | None = None,
+        cluster: str,
+        counter: str,
+        object: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> None:
-        return session.exec(
+    ):
+        return session.call(
             Command(
                 Arg("counter"),
-                Arg("clear"),
-                Arg(cluster_uuid, "--cluster={}"),
-                Arg(counter_name, "--counter={}"),
-                Arg(counter_object, "--object={}"),
+                Arg(cluster, "--cluster={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
+                Arg("clear"),
+                Arg(counter, "--counter={}"),
+                Arg(object, "--object={}"),
             ),
         )
 
     @staticmethod
     def accumulated_values(
         session: Session,
-        cluster_uuid: str,
-        counter_name: str,
-        counter_object: str | None = None,
+        cluster: str,
+        counter: str,
+        object: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> List[CounterValuesSchema]:
-        values = session.exec(
+    ):
+        return session.exec(
             Command(
                 Arg("counter"),
-                Arg("accumulated-values"),
-                Arg(cluster_uuid, "--cluster={}"),
-                Arg(counter_name, "--counter={}"),
-                Arg(counter_object, "--object={}"),
+                Arg(cluster, "--cluster={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
-            ),
-            to_list,
-        )
-        if values is None or len(values) == 0:
-            return []
-        return list_to_dc(values, CounterValuesSchema)
+                Arg("accumulated-values"),
+                Arg(counter, "--counter={}"),
+                Arg(object, "--object={}"),
+            )
+        ).to_list()

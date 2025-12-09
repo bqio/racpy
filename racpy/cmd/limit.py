@@ -1,61 +1,51 @@
-from typing import List
 from .command import Command, Arg
 from ..session import Session
-from ..handlers import to_list, to_dict
-from ..utils import list_to_dc, to_dc
-from ..schemas import LimitSchema
 
 
 class Limit:
     @staticmethod
     def list(
         session: Session,
-        cluster_uuid: str,
+        cluster: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> List[LimitSchema]:
-        limits = session.exec(
+    ):
+        return session.exec(
             Command(
                 Arg("limit"),
-                Arg("list"),
-                Arg(cluster_uuid, "--cluster={}"),
+                Arg(cluster, "--cluster={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
-            ),
-            to_list,
-        )
-        if limits is None or len(limits) == 0:
-            return []
-        return list_to_dc(limits, LimitSchema)
+                Arg("list"),
+            )
+        ).to_list()
 
     @staticmethod
     def info(
         session: Session,
-        cluster_uuid: str,
-        limit_name: str,
+        cluster: str,
+        limit: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> LimitSchema:
-        limit = session.exec(
+    ):
+        return session.exec(
             Command(
                 Arg("limit"),
-                Arg("info"),
-                Arg(cluster_uuid, "--cluster={}"),
-                Arg(limit_name, "--limit={}"),
+                Arg(cluster, "--cluster={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
-            ),
-            to_dict,
-        )
-        return to_dc(limit, LimitSchema)
+                Arg("info"),
+                Arg(limit, "--limit={}"),
+            )
+        ).to_dict()
 
     @staticmethod
     def update(
         session: Session,
-        cluster_uuid: str,
-        limit_name: str,
+        cluster: str,
+        name: str,
         action: str,
-        counter_name: str,
+        counter: str,
         duration: int | None = None,
         cpu_time: int | None = None,
         memory: int | None = None,
@@ -71,15 +61,17 @@ class Limit:
         descr: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> None:
-        return session.exec(
+    ):
+        return session.call(
             Command(
                 Arg("limit"),
+                Arg(cluster, "--cluster={}"),
+                Arg(cluster_user, "--cluster-user={}"),
+                Arg(cluster_pwd, "--cluster-pwd={}"),
                 Arg("update"),
-                Arg(cluster_uuid, "--cluster={}"),
-                Arg(limit_name, "--name={}"),
+                Arg(name, "--name={}"),
                 Arg(action, "--action={}"),
-                Arg(counter_name, "--counter={}"),
+                Arg(counter, "--counter={}"),
                 Arg(duration, "--duration={}"),
                 Arg(cpu_time, "--cpu-time={}"),
                 Arg(memory, "--memory={}"),
@@ -93,26 +85,24 @@ class Limit:
                 Arg(number_of_sessions, "--number-of-sessions={}"),
                 Arg(error_message, "--error-message={}"),
                 Arg(descr, "--descr={}"),
-                Arg(cluster_user, "--cluster-user={}"),
-                Arg(cluster_pwd, "--cluster-pwd={}"),
-            ),
+            )
         )
 
     @staticmethod
     def remove(
         session: Session,
-        cluster_uuid: str,
-        limit_name: str,
+        cluster: str,
+        name: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
-    ) -> None:
-        return session.exec(
+    ):
+        return session.call(
             Command(
                 Arg("limit"),
-                Arg("remove"),
-                Arg(cluster_uuid, "--cluster={}"),
-                Arg(limit_name, "--name={}"),
+                Arg(cluster, "--cluster={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
-            ),
+                Arg("remove"),
+                Arg(name, "--name={}"),
+            )
         )
