@@ -8,7 +8,8 @@ class Infobase:
     def info(
         session: Session,
         cluster: str,
-        infobase: str,
+        infobase: str | None = None,
+        name: str | None = None,
         infobase_user: str | None = None,
         infobase_pwd: str | None = None,
         cluster_user: str | None = None,
@@ -22,6 +23,7 @@ class Infobase:
                 Arg(cluster_pwd, "--cluster-pwd={}"),
                 Arg("info"),
                 Arg(infobase, "--infobase={}"),
+                Arg(name, "--name={}"),
                 Arg(infobase_user, "--infobase-user={}"),
                 Arg(infobase_pwd, "--infobase-pwd={}"),
             )
@@ -32,7 +34,8 @@ class Infobase:
         def info(
             session: Session,
             cluster: str,
-            infobase: str,
+            infobase: str | None = None,
+            name: str | None = None,
             cluster_user: str | None = None,
             cluster_pwd: str | None = None,
         ):
@@ -45,6 +48,7 @@ class Infobase:
                     Arg("summary"),
                     Arg("info"),
                     Arg(infobase, "--infobase={}"),
+                    Arg(name, "--name={}"),
                 )
             ).to_dict()
 
@@ -70,7 +74,8 @@ class Infobase:
         def update(
             session: Session,
             cluster: str,
-            infobase: str,
+            infobase: str | None = None,
+            name: str | None = None,
             descr: str | None = None,
             cluster_user: str | None = None,
             cluster_pwd: str | None = None,
@@ -84,6 +89,7 @@ class Infobase:
                     Arg("summary"),
                     Arg("update"),
                     Arg(infobase, "--infobase={}"),
+                    Arg(name, "--name={}"),
                     Arg(descr, "--descr={}"),
                 )
             )
@@ -136,7 +142,8 @@ class Infobase:
     def update(
         session: Session,
         cluster: str,
-        infobase: str,
+        infobase: str | None = None,
+        name: str | None = None,
         infobase_user: str | None = None,
         infobase_pwd: str | None = None,
         dbms: str | None = None,
@@ -159,6 +166,11 @@ class Infobase:
         security_profile_name: str | None = None,
         safe_mode_security_profile_name: str | None = None,
         disable_local_speech_to_text: bool | None = None,
+        configuration_unload_delay_by_working_process_without_active_users: (
+            int | None
+        ) = None,
+        minimum_scheduled_jobs_start_period_without_active_users: int | None = None,
+        maximum_scheduled_jobs_start_shift_without_active_users: int | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
     ):
@@ -170,6 +182,7 @@ class Infobase:
                 Arg(cluster_pwd, "--cluster-pwd={}"),
                 Arg("update"),
                 Arg(infobase, "--infobase={}"),
+                Arg(name, "--name={}"),
                 Arg(infobase_user, "--infobase-user={}"),
                 Arg(infobase_pwd, "--infobase-pwd={}"),
                 Arg(dbms, "--dbms={}"),
@@ -204,6 +217,18 @@ class Infobase:
                     b2yn(disable_local_speech_to_text),
                     "--disable-local-speech-to-text={}",
                 ),
+                Arg(
+                    configuration_unload_delay_by_working_process_without_active_users,
+                    "--configuration-unload-delay-by-working-process-without-active-users={}",
+                ),
+                Arg(
+                    minimum_scheduled_jobs_start_period_without_active_users,
+                    "--minimum-scheduled-jobs-start-period-without-active-users={}",
+                ),
+                Arg(
+                    maximum_scheduled_jobs_start_shift_without_active_users,
+                    "--maximum-scheduled-jobs-start-shift-without-active-users={}",
+                ),
             )
         )
 
@@ -211,7 +236,8 @@ class Infobase:
     def drop(
         session: Session,
         cluster: str,
-        infobase: str,
+        infobase: str | None = None,
+        name: str | None = None,
         infobase_user: str | None = None,
         infobase_pwd: str | None = None,
         drop_database: bool = False,
@@ -227,6 +253,7 @@ class Infobase:
                 Arg(cluster_pwd, "--cluster-pwd={}"),
                 Arg("drop"),
                 Arg(infobase, "--infobase={}"),
+                Arg(name, "--name={}"),
                 Arg(infobase_user, "--infobase-user={}"),
                 Arg(infobase_pwd, "--infobase-pwd={}"),
                 Flag(drop_database, "--drop-database"),

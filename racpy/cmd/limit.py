@@ -45,7 +45,7 @@ class Limit:
         cluster: str,
         name: str,
         action: str,
-        counter: str,
+        counter: str | None = None,
         duration: int | None = None,
         cpu_time: int | None = None,
         memory: int | None = None,
