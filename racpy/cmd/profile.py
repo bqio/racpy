@@ -7,24 +7,24 @@ class Profile:
     @staticmethod
     def list(
         session: Session,
-        cluster_uuid: str,
+        cluster: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
     ):
         return session.exec(
             Command(
                 Arg("profile"),
-                Arg("list"),
-                Arg(cluster_uuid, "--cluster={}"),
+                Arg(cluster, "--cluster={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
+                Arg("list"),
             )
         ).to_list()
 
     @staticmethod
     def update(
         session: Session,
-        cluster_uuid: str,
+        cluster: str,
         name: str,
         descr: str | None = None,
         config: bool | None = None,
@@ -43,8 +43,10 @@ class Profile:
         return session.call(
             Command(
                 Arg("profile"),
+                Arg(cluster, "--cluster={}"),
+                Arg(cluster_user, "--cluster-user={}"),
+                Arg(cluster_pwd, "--cluster-pwd={}"),
                 Arg("update"),
-                Arg(cluster_uuid, "--cluster={}"),
                 Arg(name, "--name={}"),
                 Arg(descr, "--descr={}"),
                 Arg(b2yn(config), "--config={}"),
@@ -66,15 +68,13 @@ class Profile:
                     modules_not_available_for_extension,
                     "--modules-not-available-for-extension={}",
                 ),
-                Arg(cluster_user, "--cluster-user={}"),
-                Arg(cluster_pwd, "--cluster-pwd={}"),
             )
         )
 
     @staticmethod
     def remove(
         session: Session,
-        cluster_uuid: str,
+        cluster: str,
         name: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
@@ -82,11 +82,11 @@ class Profile:
         return session.call(
             Command(
                 Arg("profile"),
-                Arg("remove"),
-                Arg(cluster_uuid, "--cluster={}"),
-                Arg(name, "--name={}"),
+                Arg(cluster, "--cluster={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
+                Arg("remove"),
+                Arg(name, "--name={}"),
             )
         )
 
@@ -95,7 +95,7 @@ class Profile:
             @staticmethod
             def list(
                 session: Session,
-                cluster_uuid: str,
+                cluster: str,
                 name: str,
                 access: str = "list",
                 cluster_user: str | None = None,
@@ -104,11 +104,11 @@ class Profile:
                 return session.exec(
                     Command(
                         Arg("profile"),
-                        Arg("acl"),
-                        Arg(cluster_uuid, "--cluster={}"),
-                        Arg(name, "--name={}"),
+                        Arg(cluster, "--cluster={}"),
                         Arg(cluster_user, "--cluster-user={}"),
                         Arg(cluster_pwd, "--cluster-pwd={}"),
+                        Arg("acl"),
+                        Arg(name, "--name={}"),
                         Arg("directory"),
                         Arg("list"),
                         Arg(access, "--access={}"),
@@ -118,7 +118,7 @@ class Profile:
             @staticmethod
             def update(
                 session: Session,
-                cluster_uuid: str,
+                cluster: str,
                 name: str,
                 alias: str,
                 descr: str | None = None,
@@ -132,11 +132,11 @@ class Profile:
                 return session.call(
                     Command(
                         Arg("profile"),
-                        Arg("acl"),
-                        Arg(cluster_uuid, "--cluster={}"),
-                        Arg(name, "--name={}"),
+                        Arg(cluster, "--cluster={}"),
                         Arg(cluster_user, "--cluster-user={}"),
                         Arg(cluster_pwd, "--cluster-pwd={}"),
+                        Arg("acl"),
+                        Arg(name, "--name={}"),
                         Arg("directory"),
                         Arg("update"),
                         Arg(alias, "--alias={}"),
@@ -151,8 +151,8 @@ class Profile:
             @staticmethod
             def remove(
                 session: Session,
-                cluster_uuid: str,
-                profile_name: str,
+                cluster: str,
+                name: str,
                 alias: str,
                 access: str = "list",
                 cluster_user: str | None = None,
@@ -161,29 +161,412 @@ class Profile:
                 return session.call(
                     Command(
                         Arg("profile"),
-                        Arg("acl"),
-                        Arg("directory"),
-                        Arg("remove"),
-                        Arg(cluster_uuid, "--cluster={}"),
-                        Arg(profile_name, "--name={}"),
-                        Arg(alias, "--alias={}"),
-                        Arg(access, "--access={}"),
+                        Arg(cluster, "--cluster={}"),
                         Arg(cluster_user, "--cluster-user={}"),
                         Arg(cluster_pwd, "--cluster-pwd={}"),
+                        Arg("acl"),
+                        Arg(name, "--name={}"),
+                        Arg("directory"),
+                        Arg("remove"),
+                        Arg(alias, "--alias={}"),
+                        Arg(access, "--access={}"),
                     )
                 )
 
         class COM:
-            pass
+            @staticmethod
+            def list(
+                session: Session,
+                cluster: str,
+                name: str,
+                access: str = "list",
+                cluster_user: str | None = None,
+                cluster_pwd: str | None = None,
+            ):
+                return session.exec(
+                    Command(
+                        Arg("profile"),
+                        Arg(cluster, "--cluster={}"),
+                        Arg(cluster_user, "--cluster-user={}"),
+                        Arg(cluster_pwd, "--cluster-pwd={}"),
+                        Arg("acl"),
+                        Arg(name, "--name={}"),
+                        Arg("com"),
+                        Arg("list"),
+                        Arg(access, "--access={}"),
+                    )
+                ).to_list()
+
+            @staticmethod
+            def update(
+                session: Session,
+                cluster: str,
+                name: str,
+                com_name: str,
+                descr: str | None = None,
+                file_name: str | None = None,
+                id: str | None = None,
+                host: str | None = None,
+                access: str = "list",
+                cluster_user: str | None = None,
+                cluster_pwd: str | None = None,
+            ):
+                return session.call(
+                    Command(
+                        Arg("profile"),
+                        Arg(cluster, "--cluster={}"),
+                        Arg(cluster_user, "--cluster-user={}"),
+                        Arg(cluster_pwd, "--cluster-pwd={}"),
+                        Arg("acl"),
+                        Arg(name, "--name={}"),
+                        Arg("com"),
+                        Arg("update"),
+                        Arg(com_name, "--name={}"),
+                        Arg(descr, "--descr={}"),
+                        Arg(file_name, "--fileName={}"),
+                        Arg(id, "--id={}"),
+                        Arg(host, "--host={}"),
+                        Arg(access, "--access={}"),
+                    )
+                )
+
+            @staticmethod
+            def remove(
+                session: Session,
+                cluster: str,
+                name: str,
+                com_name: str,
+                access: str = "list",
+                cluster_user: str | None = None,
+                cluster_pwd: str | None = None,
+            ):
+                return session.call(
+                    Command(
+                        Arg("profile"),
+                        Arg(cluster, "--cluster={}"),
+                        Arg(cluster_user, "--cluster-user={}"),
+                        Arg(cluster_pwd, "--cluster-pwd={}"),
+                        Arg("acl"),
+                        Arg(name, "--name={}"),
+                        Arg("com"),
+                        Arg("remove"),
+                        Arg(com_name, "--name={}"),
+                        Arg(access, "--access={}"),
+                    )
+                )
 
         class Addin:
-            pass
+            @staticmethod
+            def list(
+                session: Session,
+                cluster: str,
+                name: str,
+                access: str = "list",
+                cluster_user: str | None = None,
+                cluster_pwd: str | None = None,
+            ):
+                return session.exec(
+                    Command(
+                        Arg("profile"),
+                        Arg(cluster, "--cluster={}"),
+                        Arg(cluster_user, "--cluster-user={}"),
+                        Arg(cluster_pwd, "--cluster-pwd={}"),
+                        Arg("acl"),
+                        Arg(name, "--name={}"),
+                        Arg("addin"),
+                        Arg("list"),
+                        Arg(access, "--access={}"),
+                    )
+                ).to_list()
+
+            @staticmethod
+            def update(
+                session: Session,
+                cluster: str,
+                name: str,
+                addin_name: str,
+                descr: str | None = None,
+                hash: str | None = None,
+                access: str = "list",
+                cluster_user: str | None = None,
+                cluster_pwd: str | None = None,
+            ):
+                return session.call(
+                    Command(
+                        Arg("profile"),
+                        Arg(cluster, "--cluster={}"),
+                        Arg(cluster_user, "--cluster-user={}"),
+                        Arg(cluster_pwd, "--cluster-pwd={}"),
+                        Arg("acl"),
+                        Arg(name, "--name={}"),
+                        Arg("addin"),
+                        Arg("update"),
+                        Arg(addin_name, "--name={}"),
+                        Arg(descr, "--descr={}"),
+                        Arg(hash, "--hash={}"),
+                        Arg(access, "--access={}"),
+                    )
+                )
+
+            @staticmethod
+            def remove(
+                session: Session,
+                cluster: str,
+                name: str,
+                addin_name: str,
+                access: str = "list",
+                cluster_user: str | None = None,
+                cluster_pwd: str | None = None,
+            ):
+                return session.call(
+                    Command(
+                        Arg("profile"),
+                        Arg(cluster, "--cluster={}"),
+                        Arg(cluster_user, "--cluster-user={}"),
+                        Arg(cluster_pwd, "--cluster-pwd={}"),
+                        Arg("acl"),
+                        Arg(name, "--name={}"),
+                        Arg("addin"),
+                        Arg("remove"),
+                        Arg(addin_name, "--name={}"),
+                        Arg(access, "--access={}"),
+                    )
+                )
 
         class Module:
-            pass
+            @staticmethod
+            def list(
+                session: Session,
+                cluster: str,
+                name: str,
+                access: str = "list",
+                cluster_user: str | None = None,
+                cluster_pwd: str | None = None,
+            ):
+                return session.exec(
+                    Command(
+                        Arg("profile"),
+                        Arg(cluster, "--cluster={}"),
+                        Arg(cluster_user, "--cluster-user={}"),
+                        Arg(cluster_pwd, "--cluster-pwd={}"),
+                        Arg("acl"),
+                        Arg(name, "--name={}"),
+                        Arg("module"),
+                        Arg("list"),
+                        Arg(access, "--access={}"),
+                    )
+                ).to_list()
+
+            @staticmethod
+            def update(
+                session: Session,
+                cluster: str,
+                name: str,
+                module_name: str,
+                descr: str | None = None,
+                hash: str | None = None,
+                access: str = "list",
+                cluster_user: str | None = None,
+                cluster_pwd: str | None = None,
+            ):
+                return session.call(
+                    Command(
+                        Arg("profile"),
+                        Arg(cluster, "--cluster={}"),
+                        Arg(cluster_user, "--cluster-user={}"),
+                        Arg(cluster_pwd, "--cluster-pwd={}"),
+                        Arg("acl"),
+                        Arg(name, "--name={}"),
+                        Arg("module"),
+                        Arg("update"),
+                        Arg(module_name, "--name={}"),
+                        Arg(descr, "--descr={}"),
+                        Arg(hash, "--hash={}"),
+                        Arg(access, "--access={}"),
+                    )
+                )
+
+            @staticmethod
+            def remove(
+                session: Session,
+                cluster: str,
+                name: str,
+                module_name: str,
+                access: str = "list",
+                cluster_user: str | None = None,
+                cluster_pwd: str | None = None,
+            ):
+                return session.call(
+                    Command(
+                        Arg("profile"),
+                        Arg(cluster, "--cluster={}"),
+                        Arg(cluster_user, "--cluster-user={}"),
+                        Arg(cluster_pwd, "--cluster-pwd={}"),
+                        Arg("acl"),
+                        Arg(name, "--name={}"),
+                        Arg("module"),
+                        Arg("remove"),
+                        Arg(module_name, "--name={}"),
+                        Arg(access, "--access={}"),
+                    )
+                )
 
         class App:
-            pass
+            @staticmethod
+            def list(
+                session: Session,
+                cluster: str,
+                name: str,
+                access: str = "list",
+                cluster_user: str | None = None,
+                cluster_pwd: str | None = None,
+            ):
+                return session.exec(
+                    Command(
+                        Arg("profile"),
+                        Arg(cluster, "--cluster={}"),
+                        Arg(cluster_user, "--cluster-user={}"),
+                        Arg(cluster_pwd, "--cluster-pwd={}"),
+                        Arg("acl"),
+                        Arg(name, "--name={}"),
+                        Arg("app"),
+                        Arg("list"),
+                        Arg(access, "--access={}"),
+                    )
+                ).to_list()
+
+            @staticmethod
+            def update(
+                session: Session,
+                cluster: str,
+                name: str,
+                app_name: str,
+                descr: str | None = None,
+                wild: str | None = None,
+                access: str = "list",
+                cluster_user: str | None = None,
+                cluster_pwd: str | None = None,
+            ):
+                return session.call(
+                    Command(
+                        Arg("profile"),
+                        Arg(cluster, "--cluster={}"),
+                        Arg(cluster_user, "--cluster-user={}"),
+                        Arg(cluster_pwd, "--cluster-pwd={}"),
+                        Arg("acl"),
+                        Arg(name, "--name={}"),
+                        Arg("app"),
+                        Arg("update"),
+                        Arg(app_name, "--name={}"),
+                        Arg(descr, "--descr={}"),
+                        Arg(wild, "--wild={}"),
+                        Arg(access, "--access={}"),
+                    )
+                )
+
+            @staticmethod
+            def remove(
+                session: Session,
+                cluster: str,
+                name: str,
+                app_name: str,
+                access: str = "list",
+                cluster_user: str | None = None,
+                cluster_pwd: str | None = None,
+            ):
+                return session.call(
+                    Command(
+                        Arg("profile"),
+                        Arg(cluster, "--cluster={}"),
+                        Arg(cluster_user, "--cluster-user={}"),
+                        Arg(cluster_pwd, "--cluster-pwd={}"),
+                        Arg("acl"),
+                        Arg(name, "--name={}"),
+                        Arg("app"),
+                        Arg("remove"),
+                        Arg(app_name, "--name={}"),
+                        Arg(access, "--access={}"),
+                    )
+                )
 
         class Inet:
-            pass
+            @staticmethod
+            def list(
+                session: Session,
+                cluster: str,
+                name: str,
+                access: str = "list",
+                cluster_user: str | None = None,
+                cluster_pwd: str | None = None,
+            ):
+                return session.exec(
+                    Command(
+                        Arg("profile"),
+                        Arg(cluster, "--cluster={}"),
+                        Arg(cluster_user, "--cluster-user={}"),
+                        Arg(cluster_pwd, "--cluster-pwd={}"),
+                        Arg("acl"),
+                        Arg(name, "--name={}"),
+                        Arg("inet"),
+                        Arg("list"),
+                        Arg(access, "--access={}"),
+                    )
+                ).to_list()
+
+            @staticmethod
+            def update(
+                session: Session,
+                cluster: str,
+                name: str,
+                inet_name: str,
+                descr: str | None = None,
+                protocol: str | None = None,
+                url: str | None = None,
+                port: int | None = None,
+                access: str = "list",
+                cluster_user: str | None = None,
+                cluster_pwd: str | None = None,
+            ):
+                return session.call(
+                    Command(
+                        Arg("profile"),
+                        Arg(cluster, "--cluster={}"),
+                        Arg(cluster_user, "--cluster-user={}"),
+                        Arg(cluster_pwd, "--cluster-pwd={}"),
+                        Arg("acl"),
+                        Arg(name, "--name={}"),
+                        Arg("inet"),
+                        Arg("update"),
+                        Arg(inet_name, "--name={}"),
+                        Arg(descr, "--descr={}"),
+                        Arg(protocol, "--protocol={}"),
+                        Arg(url, "--url={}"),
+                        Arg(port, "--port={}"),
+                        Arg(access, "--access={}"),
+                    )
+                )
+
+            @staticmethod
+            def remove(
+                session: Session,
+                cluster: str,
+                name: str,
+                inet_name: str,
+                access: str = "list",
+                cluster_user: str | None = None,
+                cluster_pwd: str | None = None,
+            ):
+                return session.call(
+                    Command(
+                        Arg("profile"),
+                        Arg(cluster, "--cluster={}"),
+                        Arg(cluster_user, "--cluster-user={}"),
+                        Arg(cluster_pwd, "--cluster-pwd={}"),
+                        Arg("acl"),
+                        Arg(name, "--name={}"),
+                        Arg("inet"),
+                        Arg("remove"),
+                        Arg(inet_name, "--name={}"),
+                        Arg(access, "--access={}"),
+                    )
+                )

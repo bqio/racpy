@@ -10,7 +10,8 @@ pip install git+https://github.com/bqio/racpy.git@8.3.27.1688
 
 ## TODO
 
-- profile module
+- service-setting module
+- binary-data-storage module
 
 ### Клиент
 
