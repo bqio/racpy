@@ -14,6 +14,8 @@ from .cmd.limit import Limit
 from .cmd.counter import Counter
 from .cmd.rule import Rule
 from .cmd.profile import Profile
+from .cmd.servicesetting import ServiceSetting
+from .cmd.bindatastorage import BinaryDataStorage
 from . import errors
 
 __all__ = [
@@ -33,5 +35,7 @@ __all__ = [
     "Counter",
     "Rule",
     "Profile",
+    "ServiceSetting",
+    "BinaryDataStorage",
     "errors",
 ]
