@@ -24,8 +24,8 @@ class Agent:
         def register(
             session: Session,
             name: str,
-            auth: str = "pwd",
             pwd: str | None = None,
+            auth: str = "pwd",
             descr: str | None = None,
             os_user: str | None = None,
             agent_user: str | None = None,
