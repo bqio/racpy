@@ -6,7 +6,7 @@ class Rule:
     @staticmethod
     def apply(
         session: Session,
-        cluster_uuid: str,
+        cluster: str,
         partial: bool = False,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
@@ -14,59 +14,59 @@ class Rule:
         return session.call(
             Command(
                 Arg("rule"),
-                Arg("apply"),
-                Arg(cluster_uuid, "--cluster={}"),
-                Flag(partial, "--partial"),
+                Arg(cluster, "--cluster={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
+                Arg("apply"),
+                Flag(partial, "--partial"),
             )
         )
 
     @staticmethod
     def info(
         session: Session,
-        cluster_uuid: str,
-        server_uuid: str,
-        rule_uuid: str,
+        cluster: str,
+        server: str,
+        rule: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
     ):
         return session.exec(
             Command(
                 Arg("rule"),
-                Arg("info"),
-                Arg(cluster_uuid, "--cluster={}"),
-                Arg(server_uuid, "--server={}"),
-                Arg(rule_uuid, "--rule={}"),
+                Arg(cluster, "--cluster={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
+                Arg("info"),
+                Arg(server, "--server={}"),
+                Arg(rule, "--rule={}"),
             )
         ).to_dict()
 
     @staticmethod
     def list(
         session: Session,
-        cluster_uuid: str,
-        server_uuid: str,
+        cluster: str,
+        server: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
     ):
         return session.exec(
             Command(
                 Arg("rule"),
-                Arg("list"),
-                Arg(cluster_uuid, "--cluster={}"),
-                Arg(server_uuid, "--server={}"),
+                Arg(cluster, "--cluster={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
+                Arg("list"),
+                Arg(server, "--server={}"),
             )
         ).to_list()
 
     @staticmethod
     def create(
         session: Session,
-        cluster_uuid: str,
-        server_uuid: str,
+        cluster: str,
+        server: str,
         position: int,
         object_type: str | None = None,
         infobase_name: str | None = None,
@@ -79,17 +79,17 @@ class Rule:
         rule = session.exec(
             Command(
                 Arg("rule"),
+                Arg(cluster, "--cluster={}"),
+                Arg(cluster_user, "--cluster-user={}"),
+                Arg(cluster_pwd, "--cluster-pwd={}"),
                 Arg("insert"),
-                Arg(cluster_uuid, "--cluster={}"),
-                Arg(server_uuid, "--server={}"),
+                Arg(server, "--server={}"),
                 Arg(position, "--position={}"),
                 Arg(object_type, "--object-type={}"),
                 Arg(infobase_name, "--infobase-name={}"),
                 Arg(rule_type, "--rule-type={}"),
                 Arg(application_ext, "--application-ext={}"),
                 Arg(priority, "--priority={}"),
-                Arg(cluster_user, "--cluster-user={}"),
-                Arg(cluster_pwd, "--cluster-pwd={}"),
             )
         ).to_dict()
         return str(rule["rule"])
@@ -97,9 +97,9 @@ class Rule:
     @staticmethod
     def update(
         session: Session,
-        cluster_uuid: str,
-        server_uuid: str,
-        rule_uuid: str,
+        cluster: str,
+        server: str,
+        rule: str,
         position: int,
         object_type: str | None = None,
         infobase_name: str | None = None,
@@ -112,38 +112,38 @@ class Rule:
         return session.call(
             Command(
                 Arg("rule"),
+                Arg(cluster, "--cluster={}"),
+                Arg(cluster_user, "--cluster-user={}"),
+                Arg(cluster_pwd, "--cluster-pwd={}"),
                 Arg("update"),
-                Arg(cluster_uuid, "--cluster={}"),
-                Arg(server_uuid, "--server={}"),
-                Arg(rule_uuid, "--rule={}"),
+                Arg(server, "--server={}"),
+                Arg(rule, "--rule={}"),
                 Arg(position, "--position={}"),
                 Arg(object_type, "--object-type={}"),
                 Arg(infobase_name, "--infobase-name={}"),
                 Arg(rule_type, "--rule-type={}"),
                 Arg(application_ext, "--application-ext={}"),
                 Arg(priority, "--priority={}"),
-                Arg(cluster_user, "--cluster-user={}"),
-                Arg(cluster_pwd, "--cluster-pwd={}"),
             ),
         )
 
     @staticmethod
     def remove(
         session: Session,
-        cluster_uuid: str,
-        server_uuid: str,
-        rule_uuid: str,
+        cluster: str,
+        server: str,
+        rule: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
     ):
         return session.call(
             Command(
                 Arg("rule"),
-                Arg("remove"),
-                Arg(cluster_uuid, "--cluster={}"),
-                Arg(server_uuid, "--server={}"),
-                Arg(rule_uuid, "--rule={}"),
+                Arg(cluster, "--cluster={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
+                Arg("remove"),
+                Arg(server, "--server={}"),
+                Arg(rule, "--rule={}"),
             )
         )

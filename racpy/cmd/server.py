@@ -106,8 +106,8 @@ class Server:
     @staticmethod
     def update(
         session: Session,
-        cluster_uuid: str,
-        server_uuid: str,
+        cluster: str,
+        server: str,
         using: str | None = None,
         dedicate_managers: str | None = None,
         port_range: str | None = None,
@@ -129,9 +129,11 @@ class Server:
         return session.call(
             Command(
                 Arg("server"),
+                Arg(cluster, "--cluster={}"),
+                Arg(cluster_user, "--cluster-user={}"),
+                Arg(cluster_pwd, "--cluster-pwd={}"),
                 Arg("update"),
-                Arg(cluster_uuid, "--cluster={}"),
-                Arg(server_uuid, "--server={}"),
+                Arg(server, "--server={}"),
                 Arg(using, "--using={}"),
                 Arg(dedicate_managers, "--dedicate-managers={}"),
                 Arg(port_range, "--port-range={}"),
@@ -159,26 +161,24 @@ class Server:
                     speech_to_text_model_directory,
                     "--speech-to-text-model-directory={}",
                 ),
-                Arg(cluster_user, "--cluster-user={}"),
-                Arg(cluster_pwd, "--cluster-pwd={}"),
             )
         )
 
     @staticmethod
     def remove(
         session: Session,
-        cluster_uuid: str,
-        server_uuid: str,
+        cluster: str,
+        server: str,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
     ):
         return session.call(
             Command(
                 Arg("server"),
-                Arg("remove"),
-                Arg(cluster_uuid, "--cluster={}"),
-                Arg(server_uuid, "--server={}"),
+                Arg(cluster, "--cluster={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
+                Arg("remove"),
+                Arg(server, "--server={}"),
             )
         )

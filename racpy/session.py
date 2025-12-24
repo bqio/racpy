@@ -27,8 +27,8 @@ class RawOutput:
                 _dict[prop[0].replace("-", "_")] = int(prop[1])
             else:
                 _dict[prop[0].replace("-", "_")] = prop[1].replace('"', "")
-        for key in _dict:
-            _dict[key] = any2b(_dict[key])
+        # for key in _dict:
+        #     _dict[key] = any2b(_dict[key])
         return _dict
 
     def to_dataclass(self, dc: Type[T]) -> T:
@@ -51,8 +51,8 @@ class RawOutput:
                     _dict[prop[0].replace("-", "_")] = int(prop[1])
                 else:
                     _dict[prop[0].replace("-", "_")] = prop[1].replace('"', "")
-            for key in _dict:
-                _dict[key] = any2b(_dict[key])
+            # for key in _dict:
+            #     _dict[key] = any2b(_dict[key])
             _list.append(_dict)
         return _list
 
