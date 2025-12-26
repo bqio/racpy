@@ -12,6 +12,10 @@ pip install git+https://github.com/bqio/racpy.git
 pip install git+https://github.com/bqio/racpy.git@8.3.27.1688
 ```
 
+## API
+
+https://bqio.github.io/racpy/
+
 ## Примеры
 
 Получение списка кластеров.
