@@ -10,6 +10,8 @@ class BinaryDataStorage:
         infobase: str,
         storage: str,
         name: str,
+        infobase_user: str | None = None,
+        infobase_pwd: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
     ):
@@ -20,6 +22,8 @@ class BinaryDataStorage:
                 Arg(infobase, "--infobase={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
+                Arg(infobase_user, "--infobase-user={}"),
+                Arg(infobase_pwd, "--infobase-pwd={}"),
                 Arg("info"),
                 Arg(storage, "--storage={}"),
                 Arg(name, "--name={}"),
@@ -31,6 +35,8 @@ class BinaryDataStorage:
         session: Session,
         cluster: str,
         infobase: str,
+        infobase_user: str | None = None,
+        infobase_pwd: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
     ):
@@ -41,6 +47,8 @@ class BinaryDataStorage:
                 Arg(infobase, "--infobase={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
+                Arg(infobase_user, "--infobase-user={}"),
+                Arg(infobase_pwd, "--infobase-pwd={}"),
                 Arg("list"),
             )
         ).to_list()
@@ -51,6 +59,8 @@ class BinaryDataStorage:
         cluster: str,
         infobase: str,
         server_path: str,
+        infobase_user: str | None = None,
+        infobase_pwd: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
     ):
@@ -61,6 +71,8 @@ class BinaryDataStorage:
                 Arg(infobase, "--infobase={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
+                Arg(infobase_user, "--infobase-user={}"),
+                Arg(infobase_pwd, "--infobase-pwd={}"),
                 Arg("create-full-backup"),
                 Arg(server_path, "--server-path={}"),
             )
@@ -73,6 +85,8 @@ class BinaryDataStorage:
         infobase: str,
         server_path: str,
         full_backup_server_path: str,
+        infobase_user: str | None = None,
+        infobase_pwd: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
     ):
@@ -83,6 +97,8 @@ class BinaryDataStorage:
                 Arg(infobase, "--infobase={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
+                Arg(infobase_user, "--infobase-user={}"),
+                Arg(infobase_pwd, "--infobase-pwd={}"),
                 Arg("create-diff-backup"),
                 Arg(server_path, "--server-path={}"),
                 Arg(full_backup_server_path, "--full-backup-server-path={}"),
@@ -95,6 +111,8 @@ class BinaryDataStorage:
         cluster: str,
         infobase: str,
         server_path: str,
+        infobase_user: str | None = None,
+        infobase_pwd: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
     ):
@@ -105,6 +123,8 @@ class BinaryDataStorage:
                 Arg(infobase, "--infobase={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
+                Arg(infobase_user, "--infobase-user={}"),
+                Arg(infobase_pwd, "--infobase-pwd={}"),
                 Arg("load-full-backup"),
                 Arg(server_path, "--server-path={}"),
             )
@@ -117,6 +137,8 @@ class BinaryDataStorage:
         infobase: str,
         server_path: str,
         full_backup_server_path: str,
+        infobase_user: str | None = None,
+        infobase_pwd: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
     ):
@@ -127,6 +149,8 @@ class BinaryDataStorage:
                 Arg(infobase, "--infobase={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
+                Arg(infobase_user, "--infobase-user={}"),
+                Arg(infobase_pwd, "--infobase-pwd={}"),
                 Arg("load-diff-backup"),
                 Arg(server_path, "--server-path={}"),
                 Arg(full_backup_server_path, "--full-backup-server-path={}"),
@@ -141,6 +165,8 @@ class BinaryDataStorage:
         storage: str,
         name: str,
         by_universal_date: str,
+        infobase_user: str | None = None,
+        infobase_pwd: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
     ):
@@ -151,6 +177,8 @@ class BinaryDataStorage:
                 Arg(infobase, "--infobase={}"),
                 Arg(cluster_user, "--cluster-user={}"),
                 Arg(cluster_pwd, "--cluster-pwd={}"),
+                Arg(infobase_user, "--infobase-user={}"),
+                Arg(infobase_pwd, "--infobase-pwd={}"),
                 Arg("clear-unused-space"),
                 Arg(storage, "--storage={}"),
                 Arg(name, "--name={}"),

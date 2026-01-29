@@ -48,7 +48,7 @@ class Counter:
         collection_time: str,
         group: str,
         filter_type: str,
-        object: str | None = None,
+        filter: str | None = None,
         duration: bool | None = None,
         cpu_time: bool | None = None,
         memory: bool | None = None,
@@ -75,7 +75,7 @@ class Counter:
                 Arg(collection_time, "--collection-time={}"),
                 Arg(group, "--group={}"),
                 Arg(filter_type, "--filter-type={}"),
-                Arg(object, "--filter={}"),
+                Arg(filter, "--filter={}"),
                 Arg(b2ana(duration), "--duration={}"),
                 Arg(b2ana(cpu_time), "--cpu-time={}"),
                 Arg(b2ana(memory), "--memory={}"),
@@ -108,7 +108,7 @@ class Counter:
                 Arg(cluster_pwd, "--cluster-pwd={}"),
                 Arg("values"),
                 Arg(counter, "--counter={}"),
-                Arg(str(object), "--object={}"),
+                Arg(object, "--object={}"),
             )
         ).to_list()
 

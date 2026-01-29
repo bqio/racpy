@@ -106,6 +106,9 @@ class Cluster:
         errors_count_threshold: int | None = None,
         kill_problem_processes: bool = True,
         kill_by_memory_with_dump: bool = False,
+        allow_access_right_audit_events_recording: bool = False,
+        ping_period: int = 0,
+        ping_timeout: int = 0,
         agent_user: str | None = None,
         agent_pwd: str | None = None,
     ):
@@ -128,6 +131,12 @@ class Cluster:
                 Arg(errors_count_threshold, "--errors-count-threshold={}"),
                 Arg(b2yn(kill_problem_processes), "--kill-problem-processes={}"),
                 Arg(b2yn(kill_by_memory_with_dump), "--kill-by-memory-with-dump={}"),
+                Arg(
+                    b2yn(allow_access_right_audit_events_recording),
+                    "--allow-access-right-audit-events-recording={}",
+                ),
+                Arg(ping_period, "--ping-period={}"),
+                Arg(ping_timeout, "--ping-timeout={}"),
                 Arg(agent_user, "--agent-user={}"),
                 Arg(agent_pwd, "--agent-pwd={}"),
             )
@@ -149,6 +158,9 @@ class Cluster:
         errors_count_threshold: int | None = None,
         kill_problem_processes: bool | None = None,
         kill_by_memory_with_dump: bool | None = None,
+        allow_access_right_audit_events_recording: bool | None = None,
+        ping_period: int | None = None,
+        ping_timeout: int | None = None,
         agent_user: str | None = None,
         agent_pwd: str | None = None,
     ):
@@ -170,6 +182,12 @@ class Cluster:
                 Arg(errors_count_threshold, "--errors-count-threshold={}"),
                 Arg(b2yn(kill_problem_processes), "--kill-problem-processes={}"),
                 Arg(b2yn(kill_by_memory_with_dump), "--kill-by-memory-with-dump={}"),
+                Arg(
+                    b2yn(allow_access_right_audit_events_recording),
+                    "--allow-access-right-audit-events-recording={}",
+                ),
+                Arg(ping_period, "--ping-period={}"),
+                Arg(ping_timeout, "--ping-timeout={}"),
                 Arg(agent_user, "--agent-user={}"),
                 Arg(agent_pwd, "--agent-pwd={}"),
             )

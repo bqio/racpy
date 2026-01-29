@@ -63,7 +63,7 @@ class Rule:
         ).to_list()
 
     @staticmethod
-    def create(
+    def insert(
         session: Session,
         cluster: str,
         server: str,

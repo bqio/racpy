@@ -16,6 +16,7 @@ from .cmd.rule import Rule
 from .cmd.profile import Profile
 from .cmd.servicesetting import ServiceSetting
 from .cmd.bindatastorage import BinaryDataStorage
+from .cmd import command
 from . import errors
 
 __all__ = [
@@ -38,4 +39,5 @@ __all__ = [
     "ServiceSetting",
     "BinaryDataStorage",
     "errors",
+    "command",
 ]

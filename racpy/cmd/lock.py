@@ -9,7 +9,7 @@ class Lock:
         cluster: str,
         infobase: str | None = None,
         connection: str | None = None,
-        usession: str | None = None,
+        infobase_session: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
     ):
@@ -22,6 +22,6 @@ class Lock:
                 Arg("list"),
                 Arg(infobase, "--infobase={}"),
                 Arg(connection, "--connection={}"),
-                Arg(usession, "--session={}"),
+                Arg(infobase_session, "--session={}"),
             )
         ).to_list()

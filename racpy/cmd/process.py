@@ -43,4 +43,4 @@ class Process:
                 Arg(server, "--server={}"),
                 Flag(licenses, "--licenses"),
             )
-        ).to_list()
+        )

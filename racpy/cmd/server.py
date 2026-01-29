@@ -1,5 +1,6 @@
 from .command import Command, Arg
 from ..session import Session
+from ..utils import b2yn
 
 
 class Server:
@@ -59,7 +60,8 @@ class Server:
         temporary_allowed_total_memory: int | None = None,
         temporary_allowed_total_memory_time_limit: int = 300,
         service_principal_name: str | None = None,
-        speech_to_text_model_directory: str | None = None,
+        restart_schedule: str | None = None,
+        add_prohibiting_assignment_rule: bool | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
     ):
@@ -96,8 +98,12 @@ class Server:
                 ),
                 Arg(service_principal_name, "--service-principal-name={}"),
                 Arg(
-                    speech_to_text_model_directory,
-                    "--speech-to-text-model-directory={}",
+                    restart_schedule,
+                    "--restart-schedule={}",
+                ),
+                Arg(
+                    b2yn(add_prohibiting_assignment_rule),
+                    "--add-prohibiting-assignment-rule={}",
                 ),
             )
         ).to_dict()
@@ -111,18 +117,18 @@ class Server:
         using: str | None = None,
         dedicate_managers: str | None = None,
         port_range: str | None = None,
-        name: str | None = None,
+        using: str | None = None,
         infobases_limit: int | None = None,
         memory_limit: int | None = None,
         connections_limit: int | None = None,
-        cluster_port: int | None = None,
+        dedicate_managers: str | None = None,
         safe_working_processess_memory_limit: int | None = None,
         safe_call_memory_limit: int | None = None,
         critical_total_memory: int | None = None,
         temporary_allowed_total_memory: int | None = None,
         temporary_allowed_total_memory_time_limit: int | None = None,
         service_principal_name: str | None = None,
-        speech_to_text_model_directory: str | None = None,
+        restart_schedule: str | None = None,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
     ):
@@ -137,11 +143,9 @@ class Server:
                 Arg(using, "--using={}"),
                 Arg(dedicate_managers, "--dedicate-managers={}"),
                 Arg(port_range, "--port-range={}"),
-                Arg(name, "--name={}"),
                 Arg(infobases_limit, "--infobases-limit={}"),
                 Arg(memory_limit, "--memory-limit={}"),
                 Arg(connections_limit, "--connections-limit={}"),
-                Arg(cluster_port, "--cluster-port={}"),
                 Arg(
                     safe_working_processess_memory_limit,
                     "--safe-working-processess-memory-limit={}",
