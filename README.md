@@ -7,9 +7,6 @@
 ```bash
 # Установка master ветки репозитория
 pip install git+https://github.com/bqio/racpy.git
-
-# Установка определенной ветки репозитория
-pip install git+https://github.com/bqio/racpy.git@8.3.27.1688
 ```
 
 ## API
