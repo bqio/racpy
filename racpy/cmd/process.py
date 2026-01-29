@@ -28,7 +28,7 @@ class Process:
     def list(
         session: Session,
         cluster: str,
-        server: str | None = None,
+        server: str,
         licenses: bool = False,
         cluster_user: str | None = None,
         cluster_pwd: str | None = None,
@@ -42,24 +42,5 @@ class Process:
                 Arg("list"),
                 Arg(server, "--server={}"),
                 Flag(licenses, "--licenses"),
-            )
-        ).to_list()
-
-    @staticmethod
-    def turn_off(
-        session: Session,
-        cluster: str,
-        process: str,
-        cluster_user: str | None = None,
-        cluster_pwd: str | None = None,
-    ):
-        return session.call(
-            Command(
-                Arg("process"),
-                Arg(cluster, "--cluster={}"),
-                Arg(cluster_user, "--cluster-user={}"),
-                Arg(cluster_pwd, "--cluster-pwd={}"),
-                Arg("turn-off"),
-                Arg(process, "--process={}"),
             )
         )
