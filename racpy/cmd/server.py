@@ -114,8 +114,6 @@ class Server:
         session: Session,
         cluster: str,
         server: str,
-        using: str | None = None,
-        dedicate_managers: str | None = None,
         port_range: str | None = None,
         using: str | None = None,
         infobases_limit: int | None = None,
@@ -161,10 +159,7 @@ class Server:
                     "--temporary-allowed-total-memory-time-limit={}",
                 ),
                 Arg(service_principal_name, "--service-principal-name={}"),
-                Arg(
-                    speech_to_text_model_directory,
-                    "--speech-to-text-model-directory={}",
-                ),
+                Arg(restart_schedule, "--restart-schedule={}"),
             )
         )
 
