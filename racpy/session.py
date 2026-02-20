@@ -4,7 +4,7 @@ from subprocess import run
 from .client import Client
 from .cmd.command import Command
 from . import errors
-from .utils import get_array_chunks, dict_entry_count, any2b
+from .utils import get_array_chunks, dict_entry_count
 
 import re
 
