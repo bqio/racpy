@@ -53,3 +53,41 @@ infobase = rc.Infobase.create(
 
 print(infobase)
 ```
+
+Пример `async` реализации **[В разработке]**.
+
+```python
+from racpy.asynchronous.client import AsyncClient
+from racpy.asynchronous.session import AsyncSession
+from racpy.asynchronous.cmd.cluster import AsyncCluster
+
+import os
+import asyncio
+
+client = AsyncClient(os.environ.get("RAC_PATH"))
+
+session1 = AsyncSession(client, "server1")
+session2 = AsyncSession(client, "server2")
+session3 = AsyncSession(client, "server3")
+session4 = AsyncSession(client, "server4")
+session5 = AsyncSession(client, "server5")
+
+
+async def main():
+    tasks = (
+        AsyncCluster.list(session1),
+        AsyncCluster.list(session2),
+        AsyncCluster.list(session3),
+        AsyncCluster.list(session4),
+        AsyncCluster.list(session5),
+    )
+
+    results = await asyncio.gather(*tasks)
+
+    for result in results:
+        print(result)
+
+
+if __name__ == "__main__":
+    asyncio.run(main()) # в 3 раза быстрее sync
+```
