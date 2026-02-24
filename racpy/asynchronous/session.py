@@ -1,6 +1,6 @@
 from .client import AsyncClient
 from ..cmd.command import Command
-from racpy import errors
+from .. import errors
 from ..session import RawOutput
 
 import asyncio

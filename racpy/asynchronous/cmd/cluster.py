@@ -1,6 +1,6 @@
-from racpy.cmd.command import Command, Arg
-from racpy.asynchronous.session import AsyncSession
-from racpy.utils import b2yn
+from ...cmd.command import Command, Arg
+from ..session import AsyncSession
+from ...utils import b2yn
 
 
 class AsyncCluster:

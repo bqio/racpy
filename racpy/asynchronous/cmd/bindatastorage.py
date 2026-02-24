@@ -1,5 +1,5 @@
-from racpy.cmd.command import Command, Arg
-from racpy.asynchronous.session import AsyncSession
+from ...cmd.command import Command, Arg
+from ..session import AsyncSession
 
 
 class AsyncBinaryDataStorage:
